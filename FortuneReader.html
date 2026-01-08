@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FortuneReader - Career Assessment</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #FFFBEB;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #3a3a3a;
+        }
+
+        .container {
+            background: #fffef9;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            max-width: 700px;
+            width: 100%;
+            padding: 50px 40px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #5a5a5a;
+            margin-bottom: 15px;
+            font-weight: 300;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            color: #8a8a8a;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .intro-text {
+            font-size: 1.05em;
+            color: #6a6a6a;
+            line-height: 1.8;
+            margin: 0 auto 35px auto;
+            max-width: 600px;
+            text-align: left;
+            padding: 25px 30px;
+            background: linear-gradient(135deg, #f9f7f4 0%, #fdfcf9 100%);
+            border-radius: 12px;
+            border-left: 4px solid #a777e3;
+            font-weight: 300;
+        }
+
+        .upload-section {
+            margin: 40px 0;
+        }
+
+        .begin-btn {
+            padding: 18px 60px;
+            font-size: 1.3em;
+            background: linear-gradient(135deg, #6e8efb 0%, #a777e3 100%);
+            color: white;
+            border: none;
+            border-radius: 35px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(110, 142, 251, 0.4);
+            font-weight: 400;
+            letter-spacing: 1px;
+            margin: 20px 0;
+        }
+
+        .begin-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(110, 142, 251, 0.5);
+        }
+
+        .begin-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .file-input-wrapper {
+            margin: 20px 0;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-label {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #6e8efb 0%, #a777e3 100%);
+            color: white;
+            border-radius: 30px;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(110, 142, 251, 0.3);
+        }
+
+        .file-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(110, 142, 251, 0.4);
+        }
+
+        .question-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-text {
+            font-size: 1.5em;
+            color: #4a4a4a;
+            margin: 30px 0 20px 0;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        .question-guidance {
+            font-size: 1em;
+            color: #7a7a7a;
+            margin: 0 0 30px 0;
+            line-height: 1.7;
+            font-weight: 300;
+            font-style: italic;
+            padding: 20px;
+            background: #f9f7f4;
+            border-radius: 10px;
+            border-left: 3px solid #a777e3;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 40px 0;
+        }
+
+        button {
+            padding: 15px 50px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-yes:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-no {
+            background: #f0ede6;
+            color: #6a6a6a;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-no:hover {
+            background: #e8e3d8;
+            transform: translateY(-2px);
+        }
+
+        .result-section {
+            display: none;
+            text-align: left;
+            animation: fadeIn 0.7s ease;
+        }
+
+        .result-title {
+            font-size: 2em;
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .result-description {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #5a5a5a;
+            background: #faf8f3;
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 30px;
+        }
+
+        .claude-prompt-section {
+            background: linear-gradient(135deg, #f9f7f4 0%, #fdfcf9 100%);
+            padding: 25px 30px;
+            border-radius: 15px;
+            border-left: 4px solid #a777e3;
+            margin-bottom: 30px;
+        }
+
+        .claude-prompt-title {
+            font-size: 1.3em;
+            color: #667eea;
+            margin-bottom: 15px;
+            font-weight: 400;
+        }
+
+        .copy-prompt-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .copy-prompt-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .message {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 10px;
+            font-size: 1em;
+        }
+
+        .message.error {
+            background: #ffe5e5;
+            color: #d32f2f;
+            border-left: 4px solid #d32f2f;
+        }
+
+        .message.info {
+            background: #e3f2fd;
+            color: #1565c0;
+            border-left: 4px solid #2196f3;
+        }
+
+        .restart-btn {
+            margin-top: 30px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 12px 40px;
+            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(240, 147, 251, 0.4);
+        }
+
+        .history-toggle-btn {
+            background: #f0ede6;
+            color: #6a6a6a;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.95em;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .history-toggle-btn:hover {
+            background: #e8e3d8;
+        }
+
+        .history-panel {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #faf8f3;
+            border-radius: 10px;
+            border-left: 3px solid #a777e3;
+            max-height: 300px;
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        .history-panel.visible {
+            display: block;
+        }
+
+        .history-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+
+        .history-item-header {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .history-item-details {
+            font-size: 0.9em;
+            color: #6a6a6a;
+            line-height: 1.6;
+        }
+
+        .no-history {
+            text-align: center;
+            color: #8a8a8a;
+            font-style: italic;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .question-text {
+                font-size: 1.2em;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="uploadSection" class="upload-section">
+            <h1>FortuneReader</h1>
+            <p class="subtitle">Focus quickly on your future with Claude</p>
+            
+            <div class="intro-text">
+                Use FortuneReader to focus quickly on your future. You want to find a career you can 
+                live with for many, many years. You need to make sacrifices. Outdoor work means weather 
+                exposure, solo work means isolation, high-stakes decisions mean stress. Your goal is to 
+                find a career you can live with for years.
+                <br><br>
+                FortuneReader takes your YES/NO responses seriously. So try different combinations of 
+                YES/NO responses. Experiment. Say YES to noise—does a better option appear? Each circuit 
+                takes only a few seconds. When you find what you really can live with, let us take it to 
+                Claude for a serious conversation about your life.
+            </div>
+            
+            <div class="file-input-wrapper">
+                <input type="file" id="csvFile" accept=".csv" style="display: none;" />
+                <button class="begin-btn" id="beginBtn">Begin Assessment</button>
+            </div>
+            
+            <div id="message"></div>
+        </div>
+
+        <div id="questionSection" class="question-section">
+            <p class="question-text" id="questionText"></p>
+            <p class="question-guidance" id="questionGuidance"></p>
+            <div class="button-group">
+                <button class="btn-yes" id="btnYes">YES</button>
+                <button class="btn-no" id="btnNo">NO</button>
+            </div>
+            <button class="history-toggle-btn" id="historyToggle">Session History ▼</button>
+            <div class="history-panel" id="historyPanel"></div>
+        </div>
+
+        <div id="resultSection" class="result-section">
+            <h2 class="result-title" id="resultTitle"></h2>
+            <div class="result-description" id="resultDescription"></div>
+            
+            <div class="claude-prompt-section">
+                <h3 class="claude-prompt-title">💬 Ready to discuss this with Claude?</h3>
+                <p style="font-size: 1.05em; color: #5a5a5a; margin-bottom: 20px;">
+                    Shall we discuss this choice with Claude?<br>
+                    <span style="font-size: 0.95em; color: #8a8a8a; font-style: italic;">
+                        (The FortuneReader prompt is copied - just paste it into Claude)
+                    </span>
+                </p>
+                <button class="copy-prompt-btn" id="openClaudeBtn">Yes, Open Claude</button>
+            </div>
+            
+            <button class="history-toggle-btn" id="historyToggleResult" style="margin: 30px auto 0 auto; display: block;">Session History ▼</button>
+            <div class="history-panel" id="historyPanelResult"></div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="restart-btn" id="restartBtn">Start New Assessment</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================================
+        // DATA STORAGE
+        // ============================================================================
+        
+        const data = {
+            jobs: [],
+            questions: [],
+            jobQuestions: [],
+            entities: [],
+            links: []
+        };
+
+        // ============================================================================
+        // STATE MANAGEMENT
+        // ============================================================================
+        
+        const state = {
+            stage: 1,
+            riaseType: null,
+            jobPool: [],
+            stage2QuestionIndex: 0,
+            stage3JobIndex: 0,
+            stage3Jobs: [],
+            answeredPreferences: []  // Track YES answers
+        };
+
+        // ============================================================================
+        // SESSION HISTORY MANAGEMENT
+        // ============================================================================
+        
+        function saveSession(jobTitle, riaseType, preferences, prompt) {
+            const sessions = JSON.parse(localStorage.getItem('fortunereader_sessions') || '[]');
+            
+            const session = {
+                date: new Date().toLocaleString(),
+                jobTitle: jobTitle,
+                riaseType: riaseType,
+                preferences: preferences,
+                prompt: prompt
+            };
+            
+            sessions.unshift(session); // Add to beginning
+            
+            // Keep only last 10 sessions
+            if (sessions.length > 10) {
+                sessions.pop();
+            }
+            
+            localStorage.setItem('fortunereader_sessions', JSON.stringify(sessions));
+        }
+        
+        function loadSessionHistory() {
+            const sessions = JSON.parse(localStorage.getItem('fortunereader_sessions') || '[]');
+            const panel = document.getElementById('historyPanel');
+            
+            if (sessions.length === 0) {
+                panel.innerHTML = '<div class="no-history">No previous sessions yet. Complete an assessment to build history.</div>';
+                return;
+            }
+            
+            let html = '';
+            sessions.forEach((session, index) => {
+                html += `
+                    <div class="history-item">
+                        <div class="history-item-header">Session ${sessions.length - index}: ${session.jobTitle}</div>
+                        <div class="history-item-details">
+                            <strong>Date:</strong> ${session.date}<br>
+                            <strong>Type:</strong> ${session.riaseType}<br>
+                            <strong>Preferences:</strong> ${session.preferences.slice(0, 3).join(', ')}${session.preferences.length > 3 ? '...' : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            panel.innerHTML = html;
+        }
+        
+        // Toggle history panel
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('historyToggle');
+            const panel = document.getElementById('historyPanel');
+            
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    panel.classList.toggle('visible');
+                    if (panel.classList.contains('visible')) {
+                        loadSessionHistory();
+                        toggleBtn.textContent = 'Session History ▲';
+                    } else {
+                        toggleBtn.textContent = 'Session History ▼';
+                    }
+                });
+            }
+            
+            // Toggle for result screen history
+            const toggleBtnResult = document.getElementById('historyToggleResult');
+            const panelResult = document.getElementById('historyPanelResult');
+            
+            if (toggleBtnResult) {
+                toggleBtnResult.addEventListener('click', function() {
+                    panelResult.classList.toggle('visible');
+                    if (panelResult.classList.contains('visible')) {
+                        loadSessionHistoryResult();
+                        toggleBtnResult.textContent = 'Session History ▲';
+                    } else {
+                        toggleBtnResult.textContent = 'Session History ▼';
+                    }
+                });
+            }
+        });
+        
+        function loadSessionHistoryResult() {
+            const sessions = JSON.parse(localStorage.getItem('fortunereader_sessions') || '[]');
+            const panel = document.getElementById('historyPanelResult');
+            
+            if (sessions.length === 0) {
+                panel.innerHTML = '<div class="no-history">No previous sessions yet.</div>';
+                return;
+            }
+            
+            let html = '';
+            sessions.forEach((session, index) => {
+                html += `
+                    <div class="history-item">
+                        <div class="history-item-header">Session ${sessions.length - index}: ${session.jobTitle}</div>
+                        <div class="history-item-details">
+                            <strong>Date:</strong> ${session.date}<br>
+                            <strong>Type:</strong> ${session.riaseType}<br>
+                            <strong>Preferences:</strong> ${session.preferences.slice(0, 4).join(', ')}${session.preferences.length > 4 ? '...' : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            panel.innerHTML = html;
+        }
+
+        // ============================================================================
+        // FILE LOADING
+        // ============================================================================
+        
+        // Begin button triggers file picker
+        document.getElementById('beginBtn').addEventListener('click', function() {
+            document.getElementById('csvFile').click();
+        });
+        
+        // File selected - load and parse
+        document.getElementById('csvFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            showMessage('Loading assessment data...', 'info');
+            
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    parseData(results.data);
+                },
+                error: function(error) {
+                    showMessage('Error reading file: ' + error.message, 'error');
+                }
+            });
+        });
+
+        function parseData(rows) {
+            console.log('Rows received:', rows.length);
+            
+            // Clear session history when loading new data
+            localStorage.removeItem('fortunereader_sessions');
+            console.log('Session history cleared for new data load');
+            
+            rows.forEach(row => {
+                if (!row.Type) return;
+                
+                switch(row.Type.trim()) {
+                    case 'Result': data.jobs.push(row); break;
+                    case 'Question': data.questions.push(row); break;
+                    case 'ResultQuestion': data.jobQuestions.push(row); break;
+                    case 'Entity': data.entities.push(row); break;
+                    case 'Link': data.links.push(row); break;
+                }
+            });
+
+            console.log('Parsed:', {
+                jobs: data.jobs.length,
+                questions: data.questions.length,
+                jobQuestions: data.jobQuestions.length,
+                entities: data.entities.length,
+                links: data.links.length
+            });
+
+            if (data.jobs.length === 0) {
+                showMessage('Invalid data format. Please check data.csv', 'error');
+                return;
+            }
+
+            showMessage('Data loaded! Starting assessment...', 'info');
+            setTimeout(startAssessment, 1500);
+        }
+
+        // ============================================================================
+        // START ASSESSMENT
+        // ============================================================================
+        
+        function startAssessment() {
+            document.getElementById('uploadSection').style.display = 'none';
+            document.getElementById('questionSection').style.display = 'block';
+            
+            state.stage = 1;
+            askStage1();
+        }
+
+        // ============================================================================
+        // STAGE 1: RIASE SELECTION (Q01-Q05)
+        // ============================================================================
+        
+        let availableRIASEQuestions = []; // Track which RIASE questions haven't been answered NO
+        
+        function askStage1() {
+            // Q01-Q05 are the RIASE questions
+            const allRiaseQuestions = data.questions.filter(q => q.Field2 === 'Stage1_RIASE');
+            
+            if (allRiaseQuestions.length === 0) {
+                console.error('No RIASE questions found!');
+                return;
+            }
+            
+            // Initialize available questions on first run
+            if (availableRIASEQuestions.length === 0) {
+                availableRIASEQuestions = [...allRiaseQuestions];
+            }
+            
+            // Ask first available RIASE question
+            const question = availableRIASEQuestions[0];
+            document.getElementById('questionText').textContent = question.Field1;
+            document.getElementById('questionGuidance').textContent = question.Field4 || '';
+            console.log(`Stage 1: ${question.ID} - ${question.Field1}`);
+        }
+
+        function handleStage1(answer) {
+            if (answer === 'YES') {
+                // Determine RIASE type from current question
+                const currentQ = availableRIASEQuestions[0];
+                
+                // Extract RIASE type from Field3 (e.g., "RIASE_R" -> "R")
+                state.riaseType = currentQ.Field3.split('_')[1];
+                
+                // Filter jobs by RIASE type - now includes hybrid jobs via expanded links
+                state.jobPool = data.jobs.filter(job => 
+                    data.links.some(link => 
+                        link.ID === job.ID && 
+                        link.Field2 === `RIASE_${state.riaseType}`
+                    )
+                );
+                
+                console.log(`Selected RIASE: ${state.riaseType}, Jobs: ${state.jobPool.length}`);
+                
+                // Move to Stage 2
+                moveToStage2();
+            } else {
+                // NO - remove this question from available list and ask next
+                availableRIASEQuestions.shift(); // Remove first question
+                
+                if (availableRIASEQuestions.length > 0) {
+                    askStage1();
+                } else {
+                    // All RIASE questions answered NO - default to E
+                    state.riaseType = 'E';
+                    state.jobPool = data.jobs.filter(job => job.Field2 === 'E');
+                    console.log(`Default RIASE: E, Jobs: ${state.jobPool.length}`);
+                    moveToStage2();
+                }
+            }
+        }
+
+        // ============================================================================
+        // STAGE 2: PREFERENCE DIFFERENTIATORS (Q06-Q55)
+        // ============================================================================
+        
+        function moveToStage2() {
+            state.stage = 2;
+            state.stage2QuestionIndex = 0;
+            console.log(`Stage 2: ${state.jobPool.length} jobs in pool`);
+            askStage2();
+        }
+
+        function askStage2() {
+            // Get all Stage 2 questions
+            const stage2Questions = data.questions.filter(q => q.Field2 === 'Stage2_Differentiator');
+            
+            // Find next relevant question (one where remaining jobs differ on this preference)
+            while (state.stage2QuestionIndex < stage2Questions.length) {
+                const question = stage2Questions[state.stage2QuestionIndex];
+                const preferenceCode = question.Field3; // e.g., "ENV_Outdoor"
+                
+                // Check if any job in pool requires this preference
+                const hasRelevance = state.jobPool.some(job => 
+                    data.links.some(link => link.ID === job.ID && link.Field2 === preferenceCode)
+                );
+                
+                if (hasRelevance) {
+                    // Ask this question
+                    document.getElementById('questionText').textContent = question.Field1;
+                    document.getElementById('questionGuidance').textContent = question.Field4 || '';
+                    console.log(`Stage 2 Q${state.stage2QuestionIndex + 1}: ${question.Field1} (${preferenceCode})`);
+                    return;
+                }
+                
+                // Skip irrelevant question
+                console.log(`Skipping Q${state.stage2QuestionIndex + 1}: ${preferenceCode} (not relevant)`);
+                state.stage2QuestionIndex++;
+            }
+            
+            // All Stage 2 questions done
+            console.log('Stage 2 complete, moving to Stage 3');
+            moveToStage3();
+        }
+
+        function handleStage2(answer) {
+            const stage2Questions = data.questions.filter(q => q.Field2 === 'Stage2_Differentiator');
+            const currentQuestion = stage2Questions[state.stage2QuestionIndex];
+            const preferenceCode = currentQuestion.Field3;
+            
+            if (answer === 'NO') {
+                // Eliminate jobs that REQUIRE this preference
+                const beforeCount = state.jobPool.length;
+                
+                state.jobPool = state.jobPool.filter(job => {
+                    // Keep jobs that DON'T have a link to this preference
+                    return !data.links.some(link => link.ID === job.ID && link.Field2 === preferenceCode);
+                });
+                
+                const eliminated = beforeCount - state.jobPool.length;
+                console.log(`NO to ${preferenceCode}: eliminated ${eliminated} jobs, ${state.jobPool.length} remain`);
+                
+                // Check if we've eliminated all jobs
+                if (state.jobPool.length === 0) {
+                    // Build failure message showing what they said YES to
+                    const yesChoices = state.answeredPreferences.length > 0 
+                        ? [`${state.riaseType}`, ...state.answeredPreferences]
+                        : [`${state.riaseType}`];
+                    const failureMsg = `You chose: ${yesChoices.join(', ')}. NO jobs match this combination.`;
+                    
+                    // Save failure to session history
+                    saveSession('NO MATCH FOUND', state.riaseType, yesChoices, failureMsg);
+                    
+                    document.getElementById('questionSection').style.display = 'none';
+                    document.getElementById('resultSection').style.display = 'block';
+                    document.getElementById('resultTitle').textContent = 'No Matching Careers Found';
+                    document.getElementById('resultDescription').textContent = failureMsg + ' Try again with different preferences.';
+                    console.log('All jobs eliminated during Stage 2');
+                    return;
+                }
+            } else {
+                // YES - keep all jobs and track this preference
+                const prefName = getPreferenceName(preferenceCode);
+                state.answeredPreferences.push(prefName);
+                console.log(`YES to ${preferenceCode}: keeping all ${state.jobPool.length} jobs`);
+            }
+            
+            // Move to next question
+            state.stage2QuestionIndex++;
+            askStage2();
+        }
+        
+        function getRiaseName(code) {
+            const names = {
+                'R': 'Realistic/hands-on work',
+                'I': 'Investigative/analytical work',
+                'A': 'Artistic/creative work',
+                'S': 'Social/helping work',
+                'E': 'Enterprising/leadership work'
+            };
+            return names[code] || code;
+        }
+        
+        function getPreferenceName(code) {
+            // Get human-readable preference name from code
+            const prefMap = {
+                'ENV_Outdoor': 'outdoor work',
+                'ENV_Travel': 'regular travel',
+                'ENV_Noise': 'noisy environments',
+                'ENV_Messy': 'messy conditions',
+                'ENV_Extreme': 'extreme weather',
+                'ENV_Urban': 'urban areas',
+                'ENV_Private': 'private workspace',
+                'ENV_Single': 'single location',
+                'PHYS_Active': 'physically active work',
+                'PHYS_Standing': 'standing most of day',
+                'PHYS_Fine': 'precise hand movements',
+                'PHYS_Heavy': 'heavy lifting',
+                'PHYS_Danger': 'dangerous work',
+                'PHYS_Hazards': 'hazardous exposure',
+                'PHYS_Stamina': 'sustained endurance',
+                'PHYS_Visual': 'exceptional visual acuity',
+                'PHYS_Repetitive': 'repetitive motions',
+                'PHYS_Varied': 'varied physical movements',
+                'SOC_Solo': 'working alone',
+                'SOC_Public': 'public-facing work',
+                'SOC_Supervise': 'supervising others',
+                'SOC_Collab': 'collaborative work',
+                'SOC_Present': 'presentations/speaking',
+                'SOC_Conflict': 'managing conflicts',
+                'SOC_OneOnOne': 'one-on-one interactions',
+                'SOC_Behind': 'behind-the-scenes work',
+                'TIME_Night': 'night shifts',
+                'TIME_Irregular': 'irregular schedules',
+                'TIME_Seasonal': 'seasonal work',
+                'TIME_Deadline': 'tight deadlines',
+                'TIME_SelfPaced': 'self-paced work',
+                'TIME_Short': 'short tasks',
+                'TIME_Immediate': 'immediate results',
+                'COG_Routine': 'routine work',
+                'COG_Abstract': 'abstract thinking',
+                'COG_Quantitative': 'working with numbers',
+                'COG_Creative': 'creative work',
+                'COG_BigPicture': 'big-picture thinking',
+                'COG_Multitask': 'multi-tasking',
+                'COG_Learning': 'extended training',
+                'COG_Reference': 'reference-based work',
+                'DEC_HighStakes': 'high-stakes decisions',
+                'DEC_Autonomous': 'autonomous work',
+                'DEC_Rapid': 'rapid decisions',
+                'DEC_Ambiguous': 'ambiguous situations',
+                'DEC_Individual': 'individual decisions',
+                'DEC_Create': 'creating procedures',
+                'EMO_Intense': 'emotionally intense work',
+                'EMO_Trauma': 'dealing with trauma',
+                'EMO_HighStress': 'high-stress environments'
+            };
+            return prefMap[code] || code;
+        }
+
+        // ============================================================================
+        // STAGE 3: JOB-SPECIFIC QUESTIONS
+        // ============================================================================
+        
+        function moveToStage3() {
+            state.stage = 3;
+            state.stage3JobIndex = 0;
+            state.stage3Jobs = state.jobPool.slice(0, 10);
+            
+            console.log(`Stage 3: ${state.stage3Jobs.length} jobs to evaluate`);
+            
+            if (state.stage3Jobs.length === 0) {
+                // Build failure message
+                const yesChoices = state.answeredPreferences.length > 0 
+                    ? [`${state.riaseType}`, ...state.answeredPreferences]
+                    : [`${state.riaseType}`];
+                const failureMsg = `You chose: ${yesChoices.join(', ')}. NO jobs matched.`;
+                
+                // Save failure to session history
+                saveSession('NO MATCH FOUND', state.riaseType, yesChoices, failureMsg);
+                
+                document.getElementById('questionSection').style.display = 'none';
+                document.getElementById('resultSection').style.display = 'block';
+                document.getElementById('resultTitle').textContent = 'No Matching Careers Found';
+                document.getElementById('resultDescription').textContent = failureMsg + ' Try again with different preferences.';
+                console.log('No jobs remaining for Stage 3');
+                return;
+            }
+            
+            askStage3();
+        }
+
+        function askStage3() {
+            if (state.stage3JobIndex >= state.stage3Jobs.length) {
+                // Asked all Stage 3 questions
+                if (state.jobPool.length === 0) {
+                    // Build failure message - they rejected all job suggestions
+                    const yesChoices = state.answeredPreferences.length > 0 
+                        ? [`${state.riaseType}`, ...state.answeredPreferences]
+                        : [`${state.riaseType}`];
+                    const failureMsg = `You chose: ${yesChoices.join(', ')}. Then NO to all ${state.stage3Jobs.length} suggested jobs.`;
+                    
+                    // User said NO to everything - save failure
+                    saveSession('NO MATCH FOUND', state.riaseType, yesChoices, failureMsg);
+                    
+                    // User said NO to everything
+                    document.getElementById('questionSection').style.display = 'none';
+                    document.getElementById('resultSection').style.display = 'block';
+                    document.getElementById('resultTitle').textContent = 'Shall We Try Again?';
+                    document.getElementById('resultDescription').textContent = failureMsg + ' This happens! Perhaps reconsider some preferences.';
+                    
+                    // Hide the Claude prompt section since there's no match
+                    const claudeSection = document.querySelector('.claude-prompt-section');
+                    if (claudeSection) claudeSection.style.display = 'none';
+                    
+                    console.log('User rejected all jobs');
+                    return;
+                }
+                // User didn't say YES to anything, show first remaining job
+                showResult();
+                return;
+            }
+            
+            const job = state.stage3Jobs[state.stage3JobIndex];
+            const jobQuestion = data.jobQuestions.find(jq => jq.ID === job.ID);
+            
+            if (!jobQuestion) {
+                // No question for this job, skip it
+                state.stage3JobIndex++;
+                askStage3();
+                return;
+            }
+            
+            document.getElementById('questionText').textContent = jobQuestion.Field1;
+            document.getElementById('questionGuidance').textContent = jobQuestion.Field2 || '';  // Show job guidance
+            console.log(`Stage 3: ${job.ID} - ${jobQuestion.Field1}`);
+        }
+
+        function handleStage3(answer) {
+            const job = state.stage3Jobs[state.stage3JobIndex];
+            
+            if (answer === 'YES') {
+                // YES - User wants this job! Select it immediately
+                state.jobPool = [job];  // Keep only this job
+                console.log(`YES to ${job.ID} - Selected as final match!`);
+                showResult();
+                return;
+            } else {
+                // NO - Remove this job and continue to next
+                state.jobPool = state.jobPool.filter(j => j.ID !== job.ID);
+                console.log(`NO to ${job.ID}, ${state.jobPool.length} jobs remain`);
+                
+                state.stage3JobIndex++;
+                askStage3();
+            }
+        }
+
+        // ============================================================================
+        // RESULT DISPLAY
+        // ============================================================================
+        
+        function showResult() {
+            if (state.jobPool.length === 0) {
+                // Build failure message
+                const yesChoices = state.answeredPreferences.length > 0 
+                    ? [`${state.riaseType}`, ...state.answeredPreferences]
+                    : [`${state.riaseType}`];
+                const failureMsg = `You chose: ${yesChoices.join(', ')}. NO jobs matched.`;
+                
+                // Save failure to session history
+                saveSession('NO MATCH FOUND', state.riaseType, yesChoices, failureMsg);
+                
+                document.getElementById('questionSection').style.display = 'none';
+                document.getElementById('resultSection').style.display = 'block';
+                document.getElementById('resultTitle').textContent = 'No Matching Careers Found';
+                document.getElementById('resultDescription').textContent = failureMsg + ' Try again with different preferences.';
+                document.getElementById('claudePrompt').textContent = '';
+                return;
+            }
+            
+            const matchedJob = state.jobPool[0];
+            console.log(`Final match: ${matchedJob.ID} - ${matchedJob.Field1}`);
+            
+            // Get user's key preferences
+            const userPreferences = [];
+            
+            // Add RIASE type
+            const riaseNames = {
+                'R': 'hands-on, practical work',
+                'I': 'analytical, problem-solving work',
+                'A': 'creative, expressive work',
+                'S': 'helping, teaching, caring for people',
+                'E': 'leading, managing, persuading others'
+            };
+            userPreferences.push(riaseNames[state.riaseType] || state.riaseType);
+            
+            // Add top preferences from entities
+            const jobLinks = data.links.filter(link => link.ID === matchedJob.ID);
+            jobLinks.slice(0, 3).forEach(link => {
+                const entity = data.entities.find(e => e.ID === link.Field2);
+                if (entity) {
+                    userPreferences.push(entity.Field1.toLowerCase());
+                }
+            });
+            
+            // Generate simple, direct Claude prompt
+            const promptText = `FortuneReader helped me select ${matchedJob.Field1} as a career I could live with for years. I have accepted some sacrifices to make this decision. Tell me the problems I should expect and how I can cope.`;
+            
+            // Save to session history
+            saveSession(matchedJob.Field1, state.riaseType, userPreferences, promptText);
+            
+            document.getElementById('questionSection').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'block';
+            
+            document.getElementById('resultTitle').textContent = matchedJob.Field1;
+            document.getElementById('resultDescription').textContent = matchedJob.Field3;
+            
+            // Button copies prompt and opens Claude in one click
+            document.getElementById('openClaudeBtn').onclick = function() {
+                // Copy prompt to clipboard
+                navigator.clipboard.writeText(promptText).then(() => {
+                    // Open Claude in new tab
+                    window.open('https://claude.ai/new', '_blank');
+                    
+                    // Show confirmation
+                    const btn = document.getElementById('openClaudeBtn');
+                    const originalText = btn.textContent;
+                    btn.textContent = '✓ Prompt Copied - Paste in Claude';
+                    btn.style.background = 'linear-gradient(135deg, #52c41a 0%, #73d13d 100%)';
+                    
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.style.background = '';
+                    }, 3000);
+                }).catch(err => {
+                    console.error('Copy failed:', err);
+                    alert('Could not copy prompt. Please copy manually:\n\n' + promptText);
+                });
+            };
+        }
+
+        // ============================================================================
+        // ANSWER HANDLER
+        // ============================================================================
+        
+        function handleAnswer(answer) {
+            if (state.stage === 1) {
+                handleStage1(answer);
+            } else if (state.stage === 2) {
+                handleStage2(answer);
+            } else if (state.stage === 3) {
+                handleStage3(answer);
+            }
+        }
+
+        // ============================================================================
+        // UI HELPERS
+        // ============================================================================
+        
+        function showMessage(msg, type) {
+            const el = document.getElementById('message');
+            el.className = 'message ' + type;
+            el.textContent = msg;
+        }
+
+        // ============================================================================
+        // RESTART ASSESSMENT
+        // ============================================================================
+        
+        function restartAssessment() {
+            // Reset state
+            state.stage = 1;
+            state.riaseType = null;
+            state.jobPool = [];
+            state.stage2QuestionIndex = 0;
+            state.stage3JobIndex = 0;
+            state.stage3Jobs = [];
+            state.answeredPreferences = [];  // Clear preferences
+            
+            // Reset available RIASE questions
+            availableRIASEQuestions = [];
+            
+            // Hide result, show questions
+            document.getElementById('resultSection').style.display = 'none';
+            document.getElementById('questionSection').style.display = 'block';
+            
+            console.log('Restarting assessment...');
+            startAssessment();
+        }
+        
+        // Attach restart button handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const restartBtn = document.getElementById('restartBtn');
+            if (restartBtn) {
+                restartBtn.addEventListener('click', restartAssessment);
+            }
+        });
+
+        // ============================================================================
+        // BUTTON EVENT LISTENERS
+        // ============================================================================
+        
+        document.getElementById('btnYes').addEventListener('click', () => handleAnswer('YES'));
+        document.getElementById('btnNo').addEventListener('click', () => handleAnswer('NO'));
+    </script>
+</body>
+</html>
