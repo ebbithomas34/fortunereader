@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -675,29 +675,41 @@
         document.getElementById('beginBtn').addEventListener('click', function() {
             showMessage('Loading assessment data from GitHub...', 'info');
             
-            // Load data.csv directly from GitHub
-            fetch('https://ebbithomasw34.github.io/fortunereader/data.csv')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to load data.csv');
-                    }
-                    return response.text();
-                })
-                .then(csvText => {
-                    Papa.parse(csvText, {
-                        header: true,
-                        skipEmptyLines: true,
-                        complete: function(results) {
-                            parseData(results.data);
-                        },
-                        error: function(error) {
-                            showMessage('Error parsing data: ' + error.message, 'error');
+            // Try multiple URLs as fallback
+            const urls = [
+                'https://cdn.jsdelivr.net/gh/ebbithomas34/fortunereader@main/data.csv',
+                'https://raw.githubusercontent.com/ebbithomas34/fortunereader/main/data.csv',
+                './data.csv'
+            ];
+            
+            async function loadData() {
+                for (const url of urls) {
+                    try {
+                        console.log('Trying:', url);
+                        const response = await fetch(url);
+                        if (response.ok) {
+                            const csvText = await response.text();
+                            Papa.parse(csvText, {
+                                header: true,
+                                skipEmptyLines: true,
+                                complete: function(results) {
+                                    parseData(results.data);
+                                },
+                                error: function(error) {
+                                    showMessage('Error parsing data: ' + error.message, 'error');
+                                }
+                            });
+                            return; // Success!
                         }
-                    });
-                })
-                .catch(error => {
-                    showMessage('Error loading data.csv: ' + error.message + '. Please make sure data.csv is uploaded to GitHub.', 'error');
-                });
+                    } catch (error) {
+                        console.log('Failed:', url, error);
+                        // Try next URL
+                    }
+                }
+                showMessage('Could not load data.csv from any source. Please wait a few minutes and try again.', 'error');
+            }
+            
+            loadData();
         });
         
         // Data is now auto-loaded from GitHub when Begin button is clicked
