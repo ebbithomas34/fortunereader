@@ -443,7 +443,6 @@
             </div>
             
             <div class="file-input-wrapper">
-                <input type="file" id="csvFile" accept=".csv" style="display: none;" />
                 <button class="begin-btn" id="beginBtn">Begin Assessment</button>
             </div>
             
@@ -672,29 +671,36 @@
         // FILE LOADING
         // ============================================================================
         
-        // Begin button triggers file picker
+        // Begin button triggers auto-load from GitHub
         document.getElementById('beginBtn').addEventListener('click', function() {
-            document.getElementById('csvFile').click();
+            showMessage('Loading assessment data from GitHub...', 'info');
+            
+            // Load data.csv directly from GitHub
+            fetch('https://ebbithomasw34.github.io/fortunereader/data.csv')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to load data.csv');
+                    }
+                    return response.text();
+                })
+                .then(csvText => {
+                    Papa.parse(csvText, {
+                        header: true,
+                        skipEmptyLines: true,
+                        complete: function(results) {
+                            parseData(results.data);
+                        },
+                        error: function(error) {
+                            showMessage('Error parsing data: ' + error.message, 'error');
+                        }
+                    });
+                })
+                .catch(error => {
+                    showMessage('Error loading data.csv: ' + error.message + '. Please make sure data.csv is uploaded to GitHub.', 'error');
+                });
         });
         
-        // File selected - load and parse
-        document.getElementById('csvFile').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            showMessage('Loading assessment data...', 'info');
-            
-            Papa.parse(file, {
-                header: true,
-                skipEmptyLines: true,
-                complete: function(results) {
-                    parseData(results.data);
-                },
-                error: function(error) {
-                    showMessage('Error reading file: ' + error.message, 'error');
-                }
-            });
-        });
+        // Data is now auto-loaded from GitHub when Begin button is clicked
 
         function parseData(rows) {
             console.log('Rows received:', rows.length);
