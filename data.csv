@@ -1,4 +1,4 @@
-Type,ID,Field1,Field2,Field3,Field4
+Type,ID,Field1,Field2,Field3,Field4 
 Result,J001,Chief Executives,E,"Chief Executives. They guide organizations to achieve vision and growth, impacting employees, stakeholders, and society. They become excellent when they overcome high-stakes risks with executive calls, inspire teams past motivation slumps, secure support past pitch rejections, and turn setbacks into gains with decisive leadership. Your choice of this job indicates that you have these inner strengths. This is your path to happiness through excellence."
 Result,J002,Chief Sustainability Officers,E,"Chief Sustainability Officers. They steer companies toward environmental responsibility, protecting the planet for future generations. They become excellent when they overcome resistance to change with decisive leadership, turn ambiguous sustainability data into clear strategies through logical reasoning, restore order past compliance lapses with steadfast enforcement, and advance sustainability despite resource constraints. Your choice of this job indicates that you have these inner strengths. This is your path to happiness through excellence."
 Result,J003,General and Operations Managers,E,"General and Operations Managers. They ensure smooth daily operations, supporting efficient delivery of goods and services to society. They become excellent when they overcome operational disruptions with calm optimization, inspire teams past motivation slumps, restore order past compliance lapses with steadfast enforcement, and adapt to changing conditions with stable oversight. Your choice of this job indicates that you have these inner strengths. This is your path to happiness through excellence."
@@ -6415,3 +6415,4 @@ Link,J924,E,SOC_Supervise,
 Link,J924,E,TIME_Deadline,
 Link,J924,E,DEC_Individual,
 Link,J924,E,COG_BigPicture,
+
