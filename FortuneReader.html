@@ -24,9 +24,7 @@
         }
 
         .container {
-            background: #fffef9;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            background-color: #FFFBEB;
             max-width: 700px;
             width: 100%;
             padding: 50px 40px;
@@ -35,7 +33,7 @@
 
         h1 {
             font-size: 2.5em;
-            color: #5a5a5a;
+            color: #3a3a3a;
             margin-bottom: 15px;
             font-weight: 300;
             letter-spacing: -1px;
@@ -43,22 +41,20 @@
 
         .subtitle {
             font-size: 1.1em;
-            color: #8a8a8a;
+            color: #3a3a3a;
             margin-bottom: 30px;
             font-weight: 300;
         }
 
         .intro-text {
             font-size: 1.05em;
-            color: #6a6a6a;
-            line-height: 1.8;
-            margin: 0 auto 35px auto;
+            color: #3a3a3a;
+            line-height: 1.6;
+            margin: 0 auto 25px auto;
             max-width: 600px;
             text-align: left;
-            padding: 25px 30px;
-            background: linear-gradient(135deg, #f9f7f4 0%, #fdfcf9 100%);
-            border-radius: 12px;
-            border-left: 4px solid #a777e3;
+            padding: 15px 0;
+            background-color: #FFFBEB;
             font-weight: 300;
         }
 
@@ -69,21 +65,20 @@
         .begin-btn {
             padding: 18px 60px;
             font-size: 1.3em;
-            background: linear-gradient(135deg, #6e8efb 0%, #a777e3 100%);
+            background: #667eea;
             color: white;
             border: none;
             border-radius: 35px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 6px 20px rgba(110, 142, 251, 0.4);
             font-weight: 400;
             letter-spacing: 1px;
             margin: 20px 0;
         }
 
         .begin-btn:hover {
+            background: #5568d3;
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(110, 142, 251, 0.5);
         }
 
         .begin-btn:active {
@@ -112,55 +107,64 @@
         .file-label {
             display: inline-block;
             padding: 15px 40px;
-            background: linear-gradient(135deg, #6e8efb 0%, #a777e3 100%);
+            background: #667eea;
             color: white;
             border-radius: 30px;
             font-size: 1.1em;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(110, 142, 251, 0.3);
         }
 
         .file-label:hover {
+            background: #5568d3;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(110, 142, 251, 0.4);
         }
 
         .question-section {
             display: none;
-            animation: fadeIn 0.5s ease;
+            animation: fadeIn 2s ease;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes slideText {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .question-text {
             font-size: 1.5em;
-            color: #4a4a4a;
-            margin: 30px 0 20px 0;
-            line-height: 1.6;
+            color: #3a3a3a;
+            margin: 15px 0 10px 0;
+            line-height: 1.4;
             font-weight: 300;
+            animation: slideText 2s ease;
+        }
+
+        @keyframes slideText {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .question-guidance {
             font-size: 1em;
-            color: #7a7a7a;
-            margin: 0 0 30px 0;
-            line-height: 1.7;
+            color: #3a3a3a;
+            margin: 0 0 15px 0;
+            line-height: 1.5;
             font-weight: 300;
             font-style: italic;
-            padding: 20px;
-            background: #f9f7f4;
-            border-radius: 10px;
-            border-left: 3px solid #a777e3;
+            padding: 10px 0;
+            background-color: #FFFBEB;
+            animation: slideText 2s ease;
         }
 
         .button-group {
             display: flex;
             gap: 20px;
             justify-content: center;
-            margin: 40px 0;
+            margin: 20px 0;
         }
 
         button {
@@ -175,68 +179,63 @@
         }
 
         .btn-yes {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #667eea;
             color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
         .btn-yes:hover {
+            background: #5568d3;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         }
 
         .btn-no {
-            background: #f0ede6;
-            color: #6a6a6a;
+            background: #d0d0d0;
+            color: #3a3a3a;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
 
         .btn-no:hover {
-            background: #e8e3d8;
+            background: #b8b8b8;
             transform: translateY(-2px);
         }
 
         .result-section {
             display: none;
             text-align: left;
-            animation: fadeIn 0.7s ease;
+            animation: fadeIn 2s ease;
         }
 
         .result-title {
             font-size: 2em;
-            color: #667eea;
-            margin-bottom: 20px;
+            color: #3a3a3a;
+            margin-bottom: 15px;
             text-align: center;
         }
 
         .result-description {
             font-size: 1.1em;
-            line-height: 1.8;
-            color: #5a5a5a;
-            background: #faf8f3;
-            padding: 30px;
-            border-radius: 15px;
-            border-left: 4px solid #667eea;
-            margin-bottom: 30px;
+            line-height: 1.6;
+            color: #3a3a3a;
+            background-color: #FFFBEB;
+            padding: 20px 0;
+            margin-bottom: 20px;
         }
 
         .claude-prompt-section {
-            background: linear-gradient(135deg, #f9f7f4 0%, #fdfcf9 100%);
-            padding: 25px 30px;
-            border-radius: 15px;
-            border-left: 4px solid #a777e3;
-            margin-bottom: 30px;
+            background-color: #FFFBEB;
+            padding: 15px 0;
+            margin-bottom: 20px;
         }
 
         .claude-prompt-title {
             font-size: 1.3em;
-            color: #667eea;
+            color: #3a3a3a;
             margin-bottom: 15px;
             font-weight: 400;
         }
 
         .copy-prompt-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #667eea;
             color: white;
             padding: 12px 30px;
             border: none;
@@ -244,12 +243,11 @@
             cursor: pointer;
             font-size: 1em;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
         .copy-prompt-btn:hover {
+            background: #5568d3;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         }
 
         .message {
@@ -272,73 +270,140 @@
         }
 
         .restart-btn {
-            margin-top: 30px;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            margin-top: 15px;
+            background: #f5576c;
             color: white;
             padding: 12px 40px;
-            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
         }
 
         .restart-btn:hover {
+            background: #e04455;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(240, 147, 251, 0.4);
         }
 
         .history-toggle-btn {
-            background: #f0ede6;
-            color: #6a6a6a;
+            background: #d0d0d0;
+            color: #3a3a3a;
             padding: 10px 25px;
             border: none;
             border-radius: 20px;
             cursor: pointer;
             font-size: 0.95em;
-            margin-top: 20px;
+            margin-top: 10px;
             transition: all 0.3s ease;
+            position: relative;
         }
 
         .history-toggle-btn:hover {
-            background: #e8e3d8;
+            background: #b8b8b8;
+        }
+
+        /* Modal overlay - covers entire screen */
+        .history-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .history-modal.visible {
+            display: flex;
+        }
+
+        /* Modal content box */
+        .history-modal-content {
+            background-color: #FFFBEB;
+            padding: 40px 60px 40px 40px;
+            border-radius: 20px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideIn 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        @keyframes slideIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Close button */
+        .history-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2em;
+            color: #3a3a3a;
+            cursor: pointer;
+            background: none;
+            border: none;
+            line-height: 1;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+        }
+
+        .history-close-btn:hover {
+            color: #667eea;
+        }
+
+        /* Modal title */
+        .history-modal-title {
+            font-size: 1.8em;
+            color: #3a3a3a;
+            margin-bottom: 30px;
+            font-weight: 300;
         }
 
         .history-panel {
-            display: none;
-            margin-top: 20px;
-            padding: 20px;
-            background: #faf8f3;
-            border-radius: 10px;
-            border-left: 3px solid #a777e3;
-            max-height: 300px;
-            overflow-y: auto;
-            text-align: left;
-        }
-
-        .history-panel.visible {
             display: block;
+            margin: 0;
+            padding: 0;
+            background-color: #FFFBEB;
+            max-height: none;
+            overflow-y: visible;
+            text-align: left;
+            width: 100%;
+            min-height: 50px;
         }
 
         .history-item {
-            padding: 15px;
-            margin-bottom: 10px;
-            background: white;
-            border-radius: 8px;
-            border-left: 3px solid #667eea;
+            padding: 20px 0;
+            margin-bottom: 25px;
+            background-color: #FFFBEB;
+            border-bottom: 1px solid #d0d0d0;
+            width: 100%;
+            display: block;
         }
 
         .history-item-header {
             font-weight: 600;
-            color: #667eea;
-            margin-bottom: 5px;
+            color: #3a3a3a;
+            margin-bottom: 10px;
+            font-size: 1.05em;
         }
 
         .history-item-details {
             font-size: 0.9em;
-            color: #6a6a6a;
-            line-height: 1.6;
+            color: #3a3a3a;
+            line-height: 2;
+            margin-top: 10px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
         }
 
         .no-history {
             text-align: center;
-            color: #8a8a8a;
+            color: #3a3a3a;
             font-style: italic;
         }
 
@@ -372,15 +437,9 @@
             <p class="subtitle">Focus quickly on your future with Claude</p>
             
             <div class="intro-text">
-                Use FortuneReader to focus quickly on your future. You want to find a career you can 
-                live with for many, many years. You need to make sacrifices. Outdoor work means weather 
-                exposure, solo work means isolation, high-stakes decisions mean stress. Your goal is to 
-                find a career you can live with for years.
+                Use FortuneReader to discover your ideal future. A career you can live with for many, many years. That needs some sacrifices. Outdoor work will mean weather exposure, solo work will mean isolation, high-stakes decisions will mean a lot of stress. Are you willing to give up some comforts to do what you really want to do day after day after day?
                 <br><br>
-                FortuneReader takes your YES/NO responses seriously. So try different combinations of 
-                YES/NO responses. Experiment. Say YES to noise—does a better option appear? Each circuit 
-                takes only a few seconds. When you find what you really can live with, let us take it to 
-                Claude for a serious conversation about your life.
+                In seeking to find your ideal future, FortuneReader takes your YES/NO responses seriously. So discover the sacrifices you need to make to find your niche. The way a musically gifted child feels good about a piano. Experiment. Say YES to noise—does a better option appear? Each circuit takes only a few seconds. When you find what you really can live with, let us take it to Claude for a serious conversation about your life.
             </div>
             
             <div class="file-input-wrapper">
@@ -398,8 +457,16 @@
                 <button class="btn-yes" id="btnYes">YES</button>
                 <button class="btn-no" id="btnNo">NO</button>
             </div>
-            <button class="history-toggle-btn" id="historyToggle">Session History ▼</button>
-            <div class="history-panel" id="historyPanel"></div>
+            <button class="history-toggle-btn" id="historyToggle">Session History</button>
+        </div>
+        
+        <!-- History Modal for Question Section -->
+        <div class="history-modal" id="historyModal">
+            <div class="history-modal-content">
+                <button class="history-close-btn" id="historyClose">×</button>
+                <h2 class="history-modal-title">Session History</h2>
+                <div class="history-panel" id="historyPanel"></div>
+            </div>
         </div>
 
         <div id="resultSection" class="result-section">
@@ -408,21 +475,29 @@
             
             <div class="claude-prompt-section">
                 <h3 class="claude-prompt-title">💬 Ready to discuss this with Claude?</h3>
-                <p style="font-size: 1.05em; color: #5a5a5a; margin-bottom: 20px;">
+                <p style="font-size: 1.05em; color: #3a3a3a; margin-bottom: 20px;">
                     Shall we discuss this choice with Claude?<br>
-                    <span style="font-size: 0.95em; color: #8a8a8a; font-style: italic;">
+                    <span style="font-size: 0.95em; color: #3a3a3a; font-style: italic;">
                         (The FortuneReader prompt is copied - just paste it into Claude)
                     </span>
                 </p>
                 <button class="copy-prompt-btn" id="openClaudeBtn">Yes, Open Claude</button>
             </div>
             
-            <button class="history-toggle-btn" id="historyToggleResult" style="margin: 30px auto 0 auto; display: block;">Session History ▼</button>
-            <div class="history-panel" id="historyPanelResult"></div>
+            <button class="history-toggle-btn" id="historyToggleResult" style="margin: 30px auto 0 auto; display: block;">Session History</button>
             
             <div style="text-align: center; margin-top: 20px;">
                 <button class="restart-btn" id="restartBtn">Start New Assessment</button>
             </div>
+        </div>
+    </div>
+    
+    <!-- History Modal for Result Section -->
+    <div class="history-modal" id="historyModalResult">
+        <div class="history-modal-content">
+            <button class="history-close-btn" id="historyCloseResult">×</button>
+            <h2 class="history-modal-title">Session History</h2>
+            <div class="history-panel" id="historyPanelResult"></div>
         </div>
     </div>
 
@@ -450,7 +525,8 @@
             stage2QuestionIndex: 0,
             stage3JobIndex: 0,
             stage3Jobs: [],
-            answeredPreferences: []  // Track YES answers
+            answeredPreferences: [],  // Track YES answers
+            rejectedJobs: []  // Track rejected jobs in Stage 3
         };
 
         // ============================================================================
@@ -465,6 +541,7 @@
                 jobTitle: jobTitle,
                 riaseType: riaseType,
                 preferences: preferences,
+                rejectedJobs: state.rejectedJobs,  // Add rejected jobs
                 prompt: prompt
             };
             
@@ -482,6 +559,8 @@
             const sessions = JSON.parse(localStorage.getItem('fortunereader_sessions') || '[]');
             const panel = document.getElementById('historyPanel');
             
+            console.log(`Loading ${sessions.length} sessions into history panel`);
+            
             if (sessions.length === 0) {
                 panel.innerHTML = '<div class="no-history">No previous sessions yet. Complete an assessment to build history.</div>';
                 return;
@@ -489,53 +568,75 @@
             
             let html = '';
             sessions.forEach((session, index) => {
+                const rejectedJobsText = session.rejectedJobs && session.rejectedJobs.length > 0 
+                    ? `<br><strong>Jobs refused:</strong> ${session.rejectedJobs.join(', ')}`
+                    : '';
+                
                 html += `
                     <div class="history-item">
                         <div class="history-item-header">Session ${sessions.length - index}: ${session.jobTitle}</div>
                         <div class="history-item-details">
-                            <strong>Date:</strong> ${session.date}<br>
-                            <strong>Type:</strong> ${session.riaseType}<br>
-                            <strong>Preferences:</strong> ${session.preferences.slice(0, 3).join(', ')}${session.preferences.length > 3 ? '...' : ''}
+                            <strong>Choice:</strong> ${session.riaseType}<br>
+                            <strong>Strengths:</strong> ${session.preferences.join(', ')}${rejectedJobsText}
                         </div>
                     </div>
                 `;
             });
             
             panel.innerHTML = html;
+            console.log('Session history HTML loaded, length:', html.length);
         }
         
         // Toggle history panel
         document.addEventListener('DOMContentLoaded', function() {
             const toggleBtn = document.getElementById('historyToggle');
-            const panel = document.getElementById('historyPanel');
+            const modal = document.getElementById('historyModal');
+            const closeBtn = document.getElementById('historyClose');
             
             if (toggleBtn) {
                 toggleBtn.addEventListener('click', function() {
-                    panel.classList.toggle('visible');
-                    if (panel.classList.contains('visible')) {
-                        loadSessionHistory();
-                        toggleBtn.textContent = 'Session History ▲';
-                    } else {
-                        toggleBtn.textContent = 'Session History ▼';
-                    }
+                    loadSessionHistory();
+                    modal.classList.add('visible');
                 });
             }
+            
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function() {
+                    modal.classList.remove('visible');
+                });
+            }
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.remove('visible');
+                }
+            });
             
             // Toggle for result screen history
             const toggleBtnResult = document.getElementById('historyToggleResult');
-            const panelResult = document.getElementById('historyPanelResult');
+            const modalResult = document.getElementById('historyModalResult');
+            const closeBtnResult = document.getElementById('historyCloseResult');
             
             if (toggleBtnResult) {
                 toggleBtnResult.addEventListener('click', function() {
-                    panelResult.classList.toggle('visible');
-                    if (panelResult.classList.contains('visible')) {
-                        loadSessionHistoryResult();
-                        toggleBtnResult.textContent = 'Session History ▲';
-                    } else {
-                        toggleBtnResult.textContent = 'Session History ▼';
-                    }
+                    loadSessionHistoryResult();
+                    modalResult.classList.add('visible');
                 });
             }
+            
+            if (closeBtnResult) {
+                closeBtnResult.addEventListener('click', function() {
+                    modalResult.classList.remove('visible');
+                });
+            }
+            
+            // Close modal when clicking outside
+            modalResult.addEventListener('click', function(e) {
+                if (e.target === modalResult) {
+                    modalResult.classList.remove('visible');
+                }
+            });
         });
         
         function loadSessionHistoryResult() {
@@ -549,13 +650,16 @@
             
             let html = '';
             sessions.forEach((session, index) => {
+                const rejectedJobsText = session.rejectedJobs && session.rejectedJobs.length > 0 
+                    ? `<br><strong>Jobs refused:</strong> ${session.rejectedJobs.join(', ')}`
+                    : '';
+                
                 html += `
                     <div class="history-item">
                         <div class="history-item-header">Session ${sessions.length - index}: ${session.jobTitle}</div>
                         <div class="history-item-details">
-                            <strong>Date:</strong> ${session.date}<br>
-                            <strong>Type:</strong> ${session.riaseType}<br>
-                            <strong>Preferences:</strong> ${session.preferences.slice(0, 4).join(', ')}${session.preferences.length > 4 ? '...' : ''}
+                            <strong>Choice:</strong> ${session.riaseType}<br>
+                            <strong>Strengths:</strong> ${session.preferences.join(', ')}${rejectedJobsText}
                         </div>
                     </div>
                 `;
@@ -662,7 +766,15 @@
             
             // Ask first available RIASE question
             const question = availableRIASEQuestions[0];
-            document.getElementById('questionText').textContent = question.Field1;
+            const questionEl = document.getElementById('questionText');
+            
+            // Trigger animation by removing and re-adding
+            questionEl.style.animation = 'none';
+            setTimeout(() => {
+                questionEl.textContent = question.Field1;
+                questionEl.style.animation = '';
+            }, 10);
+            
             document.getElementById('questionGuidance').textContent = question.Field4 || '';
             console.log(`Stage 1: ${question.ID} - ${question.Field1}`);
         }
@@ -729,8 +841,14 @@
                 );
                 
                 if (hasRelevance) {
-                    // Ask this question
-                    document.getElementById('questionText').textContent = question.Field1;
+                    // Ask this question with animation
+                    const questionEl = document.getElementById('questionText');
+                    questionEl.style.animation = 'none';
+                    setTimeout(() => {
+                        questionEl.textContent = question.Field1;
+                        questionEl.style.animation = '';
+                    }, 10);
+                    
                     document.getElementById('questionGuidance').textContent = question.Field4 || '';
                     console.log(`Stage 2 Q${state.stage2QuestionIndex + 1}: ${question.Field1} (${preferenceCode})`);
                     return;
@@ -934,7 +1052,13 @@
                 return;
             }
             
-            document.getElementById('questionText').textContent = jobQuestion.Field1;
+            const questionEl = document.getElementById('questionText');
+            questionEl.style.animation = 'none';
+            setTimeout(() => {
+                questionEl.textContent = jobQuestion.Field1;
+                questionEl.style.animation = '';
+            }, 10);
+            
             document.getElementById('questionGuidance').textContent = jobQuestion.Field2 || '';  // Show job guidance
             console.log(`Stage 3: ${job.ID} - ${jobQuestion.Field1}`);
         }
@@ -949,7 +1073,8 @@
                 showResult();
                 return;
             } else {
-                // NO - Remove this job and continue to next
+                // NO - Track rejected job and remove it
+                state.rejectedJobs.push(job.Field1);  // Save job title
                 state.jobPool = state.jobPool.filter(j => j.ID !== job.ID);
                 console.log(`NO to ${job.ID}, ${state.jobPool.length} jobs remain`);
                 
@@ -1029,7 +1154,7 @@
                     const btn = document.getElementById('openClaudeBtn');
                     const originalText = btn.textContent;
                     btn.textContent = '✓ Prompt Copied - Paste in Claude';
-                    btn.style.background = 'linear-gradient(135deg, #52c41a 0%, #73d13d 100%)';
+                    btn.style.background = '#52c41a';
                     
                     setTimeout(() => {
                         btn.textContent = originalText;
@@ -1079,6 +1204,7 @@
             state.stage3JobIndex = 0;
             state.stage3Jobs = [];
             state.answeredPreferences = [];  // Clear preferences
+            state.rejectedJobs = [];  // Clear rejected jobs
             
             // Reset available RIASE questions
             availableRIASEQuestions = [];
