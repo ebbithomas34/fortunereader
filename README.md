@@ -80,7 +80,7 @@ Career data based on O*NET (Occupational Information Network), the U.S. Departme
 
 Created by Ebbi Thomas
 
-Connect: [Your Substack/Website]
+Connect: https://abrahamthomas34.substack.com/
 
 ---
 
