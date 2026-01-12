@@ -212,4 +212,4 @@ For questions, issues, or feedback:
 
 **Make AI work for you!**
 
-Visit [FortuneReader](https://ebbithomas34.github.io/fortunereader/) to find your ideal career path.
+Visit [[FortuneReader](https://ebbithomas34.github.io/fortunereader/) to find your ideal career path.](https://abrahamthomas34.substack.com/) to explore the foundational approach of FortuneReader
