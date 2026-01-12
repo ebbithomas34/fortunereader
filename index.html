@@ -576,38 +576,36 @@
                 if (e.target.id === 'historyModal') closeHistory();
             });
         });
-    // AUTO-LOAD FROM GITHUB
-        async function autoLoadGitHub() {
-            showMessage('Loading assessment data...', 'info');
-            
-            const url = './data.csv';
-            
-            try {
-                const response = await fetch(url);
-                if (response.ok) {
-                    const csvText = await response.text();
-                    Papa.parse(csvText, {
-                        header: true,
-                        skipEmptyLines: true,
-                        complete: function(results) {
-                            parseData(results.data);
-                        },
-                        error: function(error) {
-                            showMessage('Error parsing data: ' + error.message, 'error');
-                        }
-                    });
-                    return;
+// AUTO-LOAD FROM GITHUB
+async function autoLoadGitHub() {
+    showMessage('Loading assessment data...', 'info');
+    
+    const url = './data.csv';
+    
+    try {
+        const response = await fetch(url);
+        if (response.ok) {
+            const csvText = await response.text();
+            Papa.parse(csvText, {
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    parseData(results.data);
+                },
+                error: function(error) {
+                    showMessage('Error parsing data: ' + error.message, 'error');
                 }
-            } catch (error) {
-                console.error('Auto-load failed:', error);
-            }
-            
-            // Fallback
-            showMessage('Click "Begin Assessment" to upload data.csv', 'info');
-            document.getElementById('beginBtn').style.display = 'block';
+            });
+            return;
         }
-
-        function parseData(rows) {
+    } catch (error) {
+        console.error('Auto-load failed:', error);
+    }
+    
+    // Fallback
+    showMessage('Click "Begin Assessment" to upload data.csv', 'info');
+    document.getElementById('beginBtn').style.display = 'block';
+}
 
         function parseData(rows) {
             console.log('Rows received:', rows.length);
