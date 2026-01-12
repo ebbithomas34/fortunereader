@@ -284,28 +284,6 @@
             text-align: left;
         }
 
-        .claude-section {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-radius: 10px;
-            border-left: 3px solid #667eea;
-        }
-
-        .claude-section h3 {
-            font-size: 1.3em;
-            color: #3a3a3a;
-            margin-bottom: 15px;
-            font-weight: 400;
-        }
-
-        .claude-section p {
-            font-size: 1.05em;
-            color: #3a3a3a;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
         /* MESSAGES */
         .message {
             padding: 18px;
@@ -509,7 +487,7 @@
 
     <script>
         // ============================================================================
-        // EXACT LOGIC FROM YOUR WORKING VERSION
+        // DATA & STATE
         // ============================================================================
         
         const data = {
@@ -534,7 +512,11 @@
         let availableRIASEQuestions = [];
         let selectedAnswer = null;
         let currentStage3Count = 0;
-// INIT
+
+        // ============================================================================
+        // INIT
+        // ============================================================================
+        
         window.addEventListener('DOMContentLoaded', function() {
             // Detect if on GitHub Pages
             if (window.location.hostname.includes('github.io')) {
@@ -545,7 +527,13 @@
             
             // File picker
             document.getElementById('beginBtn').addEventListener('click', function() {
-                document.getElementById('csvFile').click();
+                // If data already loaded, start assessment
+                if (data.jobs.length > 0) {
+                    startAssessment();
+                } else {
+                    // Otherwise, trigger file picker
+                    document.getElementById('csvFile').click();
+                }
             });
             
             document.getElementById('csvFile').addEventListener('change', function(e) {
@@ -559,6 +547,8 @@
                     skipEmptyLines: true,
                     complete: function(results) {
                         parseData(results.data);
+                        showMessage('Data loaded! Click "Begin Assessment" to start.', 'info');
+                        document.getElementById('beginBtn').style.display = 'block';
                     },
                     error: function(error) {
                         showMessage('Error reading file: ' + error.message, 'error');
@@ -576,37 +566,63 @@
                 if (e.target.id === 'historyModal') closeHistory();
             });
         });
-// AUTO-LOAD FROM GITHUB
-async function autoLoadGitHub() {
-    showMessage('Loading assessment data...', 'info');
-    
-    const url = './data.csv';
-    
-    try {
-        const response = await fetch(url);
-        if (response.ok) {
-            const csvText = await response.text();
-            Papa.parse(csvText, {
-                header: true,
-                skipEmptyLines: true,
-                complete: function(results) {
-                    parseData(results.data);
-                },
-                error: function(error) {
-                    showMessage('Error parsing data: ' + error.message, 'error');
-                }
-            });
-            return;
-        }
-    } catch (error) {
-        console.error('Auto-load failed:', error);
-    }
-    
-    // Fallback
-    showMessage('Click "Begin Assessment" to upload data.csv', 'info');
-    document.getElementById('beginBtn').style.display = 'block';
-}
 
+        // ============================================================================
+        // AUTO-LOAD FROM GITHUB
+        // ============================================================================
+        
+        async function autoLoadGitHub() {
+            const urls = [
+                'https://raw.githubusercontent.com/ebbithomas34/fortunereader/main/data.csv',
+                './data.csv',
+                'https://cdn.jsdelivr.net/gh/ebbithomas34/fortunereader@main/data.csv'
+            ];
+            
+            showMessage('Loading assessment data...', 'info');
+            
+            for (const url of urls) {
+                try {
+                    console.log('Trying to load from:', url);
+                    const response = await fetch(url);
+                    
+                    if (response.ok) {
+                        const csvText = await response.text();
+                        console.log('Successfully loaded from:', url);
+                        
+                        Papa.parse(csvText, {
+                            header: true,
+                            skipEmptyLines: true,
+                            complete: function(results) {
+                                console.log('Parsed rows:', results.data.length);
+                                parseData(results.data);
+                                
+                                // Show Begin button but DON'T auto-start
+                                showMessage('Data loaded! Click "Begin Assessment" to start.', 'info');
+                                document.getElementById('beginBtn').style.display = 'block';
+                            },
+                            error: function(error) {
+                                console.error('Parse error:', error);
+                                showMessage('Error parsing data: ' + error.message, 'error');
+                            }
+                        });
+                        return; // Success - exit function
+                    }
+                } catch (error) {
+                    console.log('Error loading from:', url, error.message);
+                    continue;
+                }
+            }
+            
+            // All URLs failed - show manual upload option
+            console.error('All data sources failed');
+            showMessage('Could not load data automatically. Click "Begin Assessment" to upload data.csv', 'info');
+            document.getElementById('beginBtn').style.display = 'block';
+        }
+
+        // ============================================================================
+        // PARSE DATA
+        // ============================================================================
+        
         function parseData(rows) {
             console.log('Rows received:', rows.length);
             localStorage.removeItem('fortunereader_sessions');
@@ -634,8 +650,14 @@ async function autoLoadGitHub() {
                 showMessage('Invalid data format. Please check data.csv', 'error');
                 return;
             }
+            
+            // Data is ready - waiting for user to click Begin
         }
 
+        // ============================================================================
+        // START ASSESSMENT
+        // ============================================================================
+        
         function startAssessment() {
             document.getElementById('welcomeScreen').style.display = 'none';
             document.getElementById('beginBtn').style.display = 'none';
@@ -646,7 +668,10 @@ async function autoLoadGitHub() {
             askStage1();
         }
 
+        // ============================================================================
         // STAGE 1
+        // ============================================================================
+        
         function askStage1() {
             const allRiaseQuestions = data.questions.filter(q => q.Field2 === 'Stage1_RIASE');
             
@@ -711,7 +736,10 @@ async function autoLoadGitHub() {
             }
         }
 
+        // ============================================================================
         // STAGE 2
+        // ============================================================================
+        
         function moveToStage2() {
             state.stage = 2;
             state.stage2QuestionIndex = 0;
@@ -796,7 +824,10 @@ async function autoLoadGitHub() {
             askStage2();
         }
 
+        // ============================================================================
         // STAGE 3
+        // ============================================================================
+        
         function moveToStage3() {
             state.stage = 3;
             state.stage3JobIndex = 0;
@@ -878,7 +909,10 @@ async function autoLoadGitHub() {
             }
         }
 
+        // ============================================================================
         // RESULTS
+        // ============================================================================
+        
         function showResult() {
             if (state.jobPool.length === 0) {
                 const yesChoices = state.answeredPreferences.length > 0 
@@ -972,7 +1006,10 @@ async function autoLoadGitHub() {
             document.getElementById('claudeResultBtn').style.display = 'none';
         }
 
+        // ============================================================================
         // ANSWER HANDLER
+        // ============================================================================
+        
         function selectBarAnswer(answer) {
             selectedAnswer = answer;
             
@@ -1004,7 +1041,10 @@ async function autoLoadGitHub() {
             }
         }
 
+        // ============================================================================
         // HELPERS
+        // ============================================================================
+        
         function showMessage(msg, type) {
             const el = document.getElementById('message');
             el.className = 'message ' + type;
@@ -1067,7 +1107,10 @@ async function autoLoadGitHub() {
             return prefMap[code] || code;
         }
 
+        // ============================================================================
         // HISTORY
+        // ============================================================================
+        
         function saveSession(jobTitle, riaseType, preferences, prompt) {
             const sessions = JSON.parse(localStorage.getItem('fortunereader_sessions') || '[]');
             
