@@ -1,1164 +1,181 @@
 <!DOCTYPE html>
-<!-- All rights reserved. Abraham Thomas 2026 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FortuneReader - Career Assessment</title>
+    <title>FortuneReader - Counselor Edition</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #FFFBEB; height: 100vh; display: flex; justify-content: center; align-items: center; color: #1a1a1a; }
+        .container { max-width: 650px; width: 90%; text-align: center; border: 1px solid #e5e2d5; padding: 40px; background: #fffdf5; box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
+        
+        /* Header Branding */
+        header { margin-bottom: 35px; }
+        h1 { font-size: 2.4rem; font-weight: 200; letter-spacing: 6px; text-transform: none; margin-bottom: 5px; }
+        .subtitle { font-size: 0.7rem; letter-spacing: 3px; color: #8a8375; text-transform: uppercase; font-weight: 400; }
+        
+        /* Counters */
+        .counter-strip { display: none; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background-color: #e5e2d5; border: 1px solid #e5e2d5; margin-bottom: 30px; }
+        .counter-strip.visible { display: grid; }
+        .stat-box { background: #fffdf5; padding: 15px; }
+        .stat-label { font-size: 0.6rem; color: #8a8375; display: block; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .stat-value { font-size: 1.3rem; font-weight: 300; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #FFFBEB;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            color: #3a3a3a;
-        }
+        /* Main Area */
+        .stage-area { display: none; min-height: 180px; }
+        .stage-area.visible { display: block; }
+        .q-text { font-size: 1.6rem; font-weight: 300; margin-bottom: 15px; line-height: 1.3; color: #111; }
+        .q-guide { font-size: 0.95rem; color: #777; font-style: italic; margin-bottom: 30px; line-height: 1.5; }
 
-        .container {
-            background-color: #FFFBEB;
-            max-width: 700px;
-            width: 100%;
-            padding: 30px 40px 50px 40px;
-        }
+        /* Buttons */
+        .btn-group { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
+        .gemini-btn { padding: 14px 35px; background: #1a1a1a; color: #fff; border: none; cursor: pointer; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; }
+        .gemini-btn:hover { background: #333; transform: translateY(-1px); }
+        .gemini-btn.secondary { background: #fff; color: #1a1a1a; border: 1px solid #1a1a1a; }
+        .gemini-btn.secondary:hover { background: #f4f4f4; }
 
-        /* COMPACT CONTROL PANEL */
-        .control-panel {
-            background-color: #FFFBEB;
-            border: 2px solid #d0d0d0;
-            border-radius: 12px;
-            padding: 20px 25px;
-            margin-bottom: 35px;
-            text-align: center;
-        }
+        /* Footer Branding */
+        footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
+        .tagline { font-size: 0.8rem; font-weight: 600; letter-spacing: 2px; color: #1a1a1a; text-transform: uppercase; }
 
-        h1 {
-            font-size: 2.2em;
-            color: #3a3a3a;
-            margin-bottom: 5px;
-            font-weight: 300;
-        }
-
-        .subtitle {
-            font-size: 1em;
-            color: #666;
-            margin-bottom: 18px;
-            font-weight: 300;
-        }
-
-        /* BUTTONS IN CONTROL PANEL */
-        .primary-btn {
-            padding: 14px 50px;
-            font-size: 1.15em;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            margin: 0 auto 18px auto;
-            display: block;
-        }
-
-        .primary-btn:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-        }
-
-        .secondary-btn {
-            background: #d0d0d0;
-            color: #3a3a3a;
-            font-size: 1em;
-            padding: 10px 30px;
-            margin-bottom: 0;
-        }
-
-        .secondary-btn:hover {
-            background: #b8b8b8;
-        }
-
-        /* PROGRESS BARS */
-        .progress-box {
-            display: none;
-        }
-
-        .progress-box.visible {
-            display: block;
-        }
-
-        /* RESULT BUTTONS (same style as progress bars) */
-        .result-buttons {
-            display: none;
-        }
-
-        .result-buttons.visible {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-
-        .result-btn {
-            flex: 1;
-            height: 38px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.95em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            white-space: nowrap;
-            background: #667eea;
-            color: white;
-            border: none;
-        }
-
-        .result-btn:hover {
-            background: #5568d3;
-            transform: translateY(-1px);
-        }
-
-        .result-btn.success {
-            background: #52c41a;
-        }
-
-        .progress-header {
-            font-size: 0.9em;
-            color: #3a3a3a;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .progress-bars {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-
-        .bar-item {
-            flex: 1;
-            height: 38px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.95em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            white-space: nowrap;
-        }
-
-        .bar-current {
-            background: #667eea;
-            color: white;
-            cursor: default;
-        }
-
-        .bar-yes {
-            background: #4caf50;
-            color: white;
-        }
-
-        .bar-yes:hover {
-            background: #45a049;
-            transform: translateY(-1px);
-        }
-
-        .bar-no {
-            background: #f44336;
-            color: white;
-        }
-
-        .bar-no:hover {
-            background: #e53935;
-            transform: translateY(-1px);
-        }
-
-        .bar-yes.selected {
-            background: #2e7d32;
-            transform: scale(1.02);
-        }
-
-        .bar-no.selected {
-            background: #c62828;
-            transform: scale(1.02);
-        }
-
-        /* CONTENT AREA */
-        .content-area {
-            max-width: 650px;
-            margin: 0 auto;
-        }
-
-        .intro-text {
-            font-size: 1.05em;
-            color: #3a3a3a;
-            line-height: 1.6;
-            text-align: left;
-            font-weight: 300;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 30px;
-            font-size: 1.15em;
-            color: #667eea;
-        }
-
-        /* QUESTIONS */
-        .question-section {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .question-section.visible {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .question-number {
-            font-size: 0.85em;
-            color: #999;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .question-text {
-            font-size: 1.5em;
-            color: #3a3a3a;
-            margin-bottom: 20px;
-            line-height: 1.4;
-            font-weight: 400;
-            text-align: center;
-        }
-
-        .question-guidance {
-            font-size: 1.05em;
-            color: #666;
-            line-height: 1.65;
-            padding: 18px;
-            background-color: #FFFBEB;
-            border-radius: 8px;
-            border-left: 3px solid #d0d0d0;
-            text-align: left;
-        }
-
-        /* RESULTS */
-        .result-section {
-            display: none;
-            animation: fadeIn 1s ease;
-        }
-
-        .result-section.visible {
-            display: block;
-        }
-
-        .result-title {
-            font-size: 2em;
-            color: #3a3a3a;
-            margin-bottom: 25px;
-            text-align: center;
-            font-weight: 400;
-        }
-
-        .result-description {
-            font-size: 1.1em;
-            line-height: 1.7;
-            color: #3a3a3a;
-            text-align: left;
-        }
-
-        /* MESSAGES */
-        .message {
-            padding: 18px;
-            margin: 20px 0;
-            border-radius: 10px;
-            font-size: 1.05em;
-        }
-
-        .message.error {
-            background: #ffe5e5;
-            color: #d32f2f;
-            border-left: 4px solid #d32f2f;
-        }
-
-        .message.info {
-            background: #e3f2fd;
-            color: #1565c0;
-            border-left: 4px solid #2196f3;
-        }
-
-        /* HISTORY MODAL */
-        .history-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .history-modal.visible {
-            display: flex;
-        }
-
-        .history-modal-content {
-            background-color: #FFFBEB;
-            padding: 40px;
-            border-radius: 12px;
-            max-width: 700px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .history-close-btn {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 2em;
-            color: #3a3a3a;
-            cursor: pointer;
-            background: none;
-            border: none;
-        }
-
-        .history-close-btn:hover {
-            color: #667eea;
-        }
-
-        .history-modal-title {
-            font-size: 1.8em;
-            color: #3a3a3a;
-            margin-bottom: 25px;
-            font-weight: 300;
-        }
-
-        .history-item {
-            padding: 15px 0;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #d0d0d0;
-        }
-
-        .history-item-header {
-            font-weight: 600;
-            color: #3a3a3a;
-            margin-bottom: 8px;
-            font-size: 1.1em;
-        }
-
-        .history-item-details {
-            font-size: 0.95em;
-            color: #666;
-            line-height: 1.8;
-        }
-
-        .no-history {
-            text-align: center;
-            color: #999;
-            font-style: italic;
-            padding: 30px;
-        }
-
-        /* COPYRIGHT */
-        .copyright {
-            text-align: center;
-            font-size: 0.9em;
-            color: #999;
-            margin-top: 40px;
-            padding: 20px 0;
-        }
+        /* Results */
+        .result-screen { display: none; animation: fadeIn 0.5s ease; }
+        .result-screen.visible { display: block; }
+        #rDesc { margin: 25px 0; color: #444; line-height: 1.7; font-size: 1rem; text-align: left; background: #fdfdfd; padding: 25px; border-radius: 4px; border: 1px solid #efefef; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- CONTROL PANEL -->
-        <div class="control-panel">
+        <header>
             <h1>FortuneReader</h1>
-            <p class="subtitle">We Wish You Happiness!</p>
+            <div class="subtitle">The AI Software for Counselors</div>
+        </header>
 
-            <input type="file" id="csvFile" accept=".csv" style="display: none;" />
-            <button class="primary-btn" id="beginBtn" style="display: none;">
-                Begin Assessment
-            </button>
+        <div class="counter-strip" id="counterStrip">
+            <div class="stat-box"><span class="stat-label">Candidate Pool</span><span class="stat-value" id="valCur">—</span></div>
+            <div class="stat-box" style="cursor:pointer" onclick="handleAnswer('YES')"><span class="stat-label">If Agree</span><span class="stat-value" id="valYes">—</span></div>
+            <div class="stat-box" style="cursor:pointer" onclick="handleAnswer('NO')"><span class="stat-label">If Disagree</span><span class="stat-value" id="valNo">—</span></div>
+        </div>
 
-            <button class="primary-btn secondary-btn" id="historyBtn" style="display: none;">
-                Session History
-            </button>
+        <div id="welcome">
+            <button class="gemini-btn" onclick="document.getElementById('csvFile').click()">Analyze Dataset</button>
+        </div>
+        <input type="file" id="csvFile" accept=".csv" style="display: none;" />
 
-            <button class="primary-btn" id="claudePanelBtn" style="display: none;">
-                Open Claude
-            </button>
-
-            <!-- Result Buttons (3 blue buttons like YES/NO style) -->
-            <div class="result-buttons" id="resultButtons">
-                <button class="result-btn" id="restartResultBtn">RESTART</button>
-                <button class="result-btn" id="historyResultBtn">SESSION HISTORY</button>
-                <button class="result-btn" id="claudeResultBtn">CLAUDE.AI</button>
-            </div>
-
-            <!-- Progress Box -->
-            <div class="progress-box" id="progressBox">
-                <div class="progress-header">Professional Directions</div>
-                <div class="progress-bars">
-                    <div class="bar-item bar-current" id="barCurrent">680</div>
-                    <div class="bar-item bar-yes" id="barYes">
-                        YES <span id="yesNum">—</span>
-                    </div>
-                    <div class="bar-item bar-no" id="barNo">
-                        NO <span id="noNum">—</span>
-                    </div>
-                </div>
+        <div class="stage-area" id="stageArea">
+            <div id="qText" class="q-text"></div>
+            <div id="qGuide" class="q-guide"></div>
+            <div class="btn-group">
+                <button class="gemini-btn" onclick="handleAnswer('YES')">Agree</button>
+                <button class="gemini-btn secondary" onclick="handleAnswer('NO')">Disagree</button>
             </div>
         </div>
 
-        <!-- CONTENT -->
-        <div class="content-area">
-            <!-- Welcome -->
-            <div id="welcomeScreen">
-                <div class="intro-text">
-                    <p style="margin-bottom: 15px;">We live in turbulent times. AI is taking away millions of jobs. But AI can't replicate human judgment, creativity, and connection. FortuneReader is the first in the world to match your strengths and weaknesses to occupational spaces where humans thrive. Multiple searches through vast US job databases led to 680 AI-resistant occupations tethered to the O*Net database.</p>
-                    
-                    <p style="margin-bottom: 15px;">Finding your occupation takes only minutes, but the process is not simple—it covers whole aspects of work. Each question you'll answer is numbered to show you how many opportunities remain if you make that choice, guiding you step by step toward your best fit. Each YES/NO option weighs trade-offs: stress, isolation, physical demands, uncertainty. Like the happiness of a musically gifted child at a piano, your inner strengths can lead to greater satisfaction in your work.</p>
-                    
-                    <p style="margin-bottom: 15px;">Within minutes, you save years of hard knocks and see better opportunities. What's more, FortuneReader instantly generates a prompt for our discussion of your chosen future right here. Just copy and paste to continue seamlessly.</p>
-                    
-                    <p style="margin-top: 15px;"><strong>Make AI work for you!</strong></p>
-                </div>
-                
-                <div id="message"></div>
-                <div id="loadingMsg" class="loading" style="display: none;">
-                    Loading assessment data...
-                </div>
-            </div>
-
-            <!-- Questions -->
-            <div class="question-section" id="questionSection">
-                <div class="question-number" id="qNum"></div>
-                <div class="question-text" id="questionText"></div>
-                <div class="question-guidance" id="questionGuidance"></div>
-            </div>
-
-            <!-- Results -->
-            <div class="result-section" id="resultSection">
-                <h2 class="result-title" id="resultTitle"></h2>
-                <div class="result-description" id="resultDescription"></div>
-                
-                <p style="text-align: center; font-size: 1.05em; color: #666; margin-top: 30px; line-height: 1.6;">
-                    Click to discuss it with Claude.ai. The FortuneReader Prompt is copied. Just paste it into Claude.
-                </p>
-            </div>
-
-            <div class="copyright">
-                © Abraham Thomas
+        <div class="result-screen" id="resultArea">
+            <h2 id="rTitle" style="font-weight:300; font-size:2rem; margin-bottom:10px;"></h2>
+            <div id="rDesc"></div>
+            <div class="btn-group">
+                <button class="gemini-btn" onclick="copyAIPrompt()">Prepare AI Strategy</button>
+                <button class="gemini-btn secondary" onclick="location.reload()">Reset Session</button>
             </div>
         </div>
 
-        <!-- History Modal -->
-        <div class="history-modal" id="historyModal">
-            <div class="history-modal-content">
-                <button class="history-close-btn" onclick="closeHistory()">×</button>
-                <h2 class="history-modal-title">Session History</h2>
-                <div id="historyPanel"></div>
-            </div>
-        </div>
+        <footer>
+            <div class="tagline">Make Your Students AI-Proof</div>
+        </footer>
     </div>
 
-    <script>
-        // ============================================================================
-        // DATA & STATE
-        // ============================================================================
-        
-        const data = {
-            jobs: [],
-            questions: [],
-            jobQuestions: [],
-            entities: [],
-            links: []
-        };
+<script>
+    let db = { R: [], Q: [], L: [] };
+    let pool = []; 
+    let state = { stage: 1, s1Idx: 0, current: null };
 
-        const state = {
-            stage: 1,
-            riaseType: null,
-            jobPool: [],
-            stage2QuestionIndex: 0,
-            stage3JobIndex: 0,
-            stage3Jobs: [],
-            answeredPreferences: [],
-            rejectedJobs: []
-        };
+    document.getElementById('csvFile').onchange = (e) => {
+        Papa.parse(e.target.files[0], {
+            header: false, skipEmptyLines: true,
+            complete: (res) => {
+                db = { R: [], Q: [], L: [] };
+                res.data.forEach(row => {
+                    const cells = row.map(c => c ? c.toString().trim() : "");
+                    const pdMatch = cells.find(c => /^PD\d+$/i.test(c)); 
+                    const qMatch = cells.find(c => /^Q\d+$/i.test(c));
 
-        let availableRIASEQuestions = [];
-        let selectedAnswer = null;
-        let currentStage3Count = 0;
-
-        // ============================================================================
-        // INIT
-        // ============================================================================
-        
-        window.addEventListener('DOMContentLoaded', function() {
-            // Detect if on GitHub Pages
-            if (window.location.hostname.includes('github.io')) {
-                autoLoadGitHub();
-            } else {
-                document.getElementById('beginBtn').style.display = 'block';
-            }
-            
-            // File picker
-            document.getElementById('beginBtn').addEventListener('click', function() {
-                // If data already loaded, start assessment
-                if (data.jobs.length > 0) {
-                    startAssessment();
-                } else {
-                    // Otherwise, trigger file picker
-                    document.getElementById('csvFile').click();
-                }
-            });
-            
-            document.getElementById('csvFile').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                
-                showMessage('Loading assessment data...', 'info');
-                
-                Papa.parse(file, {
-                    header: true,
-                    skipEmptyLines: true,
-                    complete: function(results) {
-                        parseData(results.data);
-                        showMessage('Data loaded! Click "Begin Assessment" to start.', 'info');
-                        document.getElementById('beginBtn').style.display = 'block';
-                    },
-                    error: function(error) {
-                        showMessage('Error reading file: ' + error.message, 'error');
+                    if (pdMatch && qMatch) {
+                        db.L.push({ r: pdMatch.toUpperCase(), q: qMatch.toUpperCase() });
+                    } else if (qMatch) {
+                        db.Q.push({ id: qMatch.toUpperCase(), text: cells[2], stage: cells[3], cat: cells[4].toUpperCase(), guide: cells[5] || "" });
+                    } else if (pdMatch) {
+                        db.R.push({ id: pdMatch.toUpperCase(), name: cells[2], cat: cells[4].toUpperCase(), desc: cells[5] || "" });
                     }
                 });
-            });
-            
-            // Bar click handlers
-            document.getElementById('barYes').onclick = () => selectBarAnswer('YES');
-            document.getElementById('barNo').onclick = () => selectBarAnswer('NO');
-            
-            // History
-            document.getElementById('historyBtn').onclick = showHistory;
-            document.getElementById('historyModal').addEventListener('click', (e) => {
-                if (e.target.id === 'historyModal') closeHistory();
-            });
+                pool = db.R.map(r => r.id);
+                document.getElementById('welcome').style.display = 'none';
+                document.getElementById('counterStrip').classList.add('visible');
+                document.getElementById('stageArea').classList.add('visible');
+                ask();
+            }
         });
+    };
 
-        // ============================================================================
-        // AUTO-LOAD FROM GITHUB
-        // ============================================================================
-        
-        async function autoLoadGitHub() {
-            const urls = [
-                'https://raw.githubusercontent.com/ebbithomas34/fortunereader/main/data.csv',
-                './data.csv',
-                'https://cdn.jsdelivr.net/gh/ebbithomas34/fortunereader@main/data.csv'
-            ];
-            
-            showMessage('Loading assessment data...', 'info');
-            
-            for (const url of urls) {
-                try {
-                    console.log('Trying to load from:', url);
-                    const response = await fetch(url);
-                    
-                    if (response.ok) {
-                        const csvText = await response.text();
-                        console.log('Successfully loaded from:', url);
-                        
-                        Papa.parse(csvText, {
-                            header: true,
-                            skipEmptyLines: true,
-                            complete: function(results) {
-                                console.log('Parsed rows:', results.data.length);
-                                parseData(results.data);
-                                
-                                // Show Begin button but DON'T auto-start
-                                showMessage('Data loaded! Click "Begin Assessment" to start.', 'info');
-                                document.getElementById('beginBtn').style.display = 'block';
-                            },
-                            error: function(error) {
-                                console.error('Parse error:', error);
-                                showMessage('Error parsing data: ' + error.message, 'error');
-                            }
-                        });
-                        return; // Success - exit function
-                    }
-                } catch (error) {
-                    console.log('Error loading from:', url, error.message);
-                    continue;
-                }
-            }
-            
-            // All URLs failed - show manual upload option
-            console.error('All data sources failed');
-            showMessage('Could not load data automatically. Click "Begin Assessment" to upload data.csv', 'info');
-            document.getElementById('beginBtn').style.display = 'block';
+    function ask() {
+        if (state.stage === 1) {
+            let qs = db.Q.filter(q => q.stage.toUpperCase().includes('STAGE1'));
+            if (state.s1Idx >= qs.length) { state.stage = 2; ask(); return; }
+            state.current = qs[state.s1Idx];
+            let yesCount = db.R.filter(r => r.cat === state.current.cat).length;
+            updateUI(state.current.text, state.current.guide, pool.length, yesCount, pool.length);
+        } else {
+            let qs = db.Q.filter(q => q.stage.toUpperCase().includes('STAGE2'));
+            let matrix = qs.map(q => {
+                let matches = pool.filter(id => db.L.some(l => l.r === id && l.q === q.id));
+                return { q, count: matches.length };
+            }).filter(m => m.count > 0 && m.count < pool.length);
+
+            matrix.sort((a, b) => b.count - a.count);
+            if (matrix.length === 0) { showResults(); return; }
+            state.current = matrix[0].q;
+            updateUI(state.current.text, state.current.guide, pool.length, matrix[0].count, pool.length - matrix[0].count);
         }
+    }
 
-        // ============================================================================
-        // PARSE DATA
-        // ============================================================================
-        
-        function parseData(rows) {
-            console.log('Rows received:', rows.length);
-            localStorage.removeItem('fortunereader_sessions');
-            
-            rows.forEach(row => {
-                if (!row.Type) return;
-                switch(row.Type.trim()) {
-                    case 'Result': data.jobs.push(row); break;
-                    case 'Question': data.questions.push(row); break;
-                    case 'ResultQuestion': data.jobQuestions.push(row); break;
-                    case 'Entity': data.entities.push(row); break;
-                    case 'Link': data.links.push(row); break;
-                }
-            });
-
-            console.log('Parsed:', {
-                jobs: data.jobs.length,
-                questions: data.questions.length,
-                jobQuestions: data.jobQuestions.length,
-                entities: data.entities.length,
-                links: data.links.length
-            });
-
-            if (data.jobs.length === 0) {
-                showMessage('Invalid data format. Please check data.csv', 'error');
-                return;
-            }
-            
-            // Data is ready - waiting for user to click Begin
+    function handleAnswer(ans) {
+        if (state.stage === 1) {
+            if (ans === 'YES') {
+                pool = db.R.filter(r => r.cat === state.current.cat).map(r => r.id);
+                state.stage = 2;
+            } else { state.s1Idx++; }
+        } else {
+            let linked = db.L.filter(l => l.q === state.current.id).map(l => l.r);
+            pool = (ans === 'YES') ? pool.filter(id => linked.includes(id)) : pool.filter(id => !linked.includes(id));
         }
+        ask();
+    }
 
-        // ============================================================================
-        // START ASSESSMENT
-        // ============================================================================
-        
-        function startAssessment() {
-            document.getElementById('welcomeScreen').style.display = 'none';
-            document.getElementById('beginBtn').style.display = 'none';
-            document.getElementById('progressBox').classList.add('visible');
-            document.getElementById('questionSection').classList.add('visible');
-            
-            state.stage = 1;
-            askStage1();
-        }
+    function updateUI(t, g, p, y, n) {
+        document.getElementById('qText').innerText = t;
+        document.getElementById('qGuide').innerText = g || "";
+        document.getElementById('valCur').innerText = p;
+        document.getElementById('valYes').innerText = y;
+        document.getElementById('valNo').innerText = n;
+    }
 
-        // ============================================================================
-        // STAGE 1
-        // ============================================================================
-        
-        function askStage1() {
-            const allRiaseQuestions = data.questions.filter(q => q.Field2 === 'Stage1_RIASE');
-            
-            if (allRiaseQuestions.length === 0) {
-                console.error('No RIASE questions found!');
-                return;
-            }
-            
-            if (availableRIASEQuestions.length === 0) {
-                availableRIASEQuestions = [...allRiaseQuestions];
-            }
-            
-            const question = availableRIASEQuestions[0];
-            document.getElementById('qNum').textContent = `Stage 1 - Question ${6 - availableRIASEQuestions.length} of 5`;
-            document.getElementById('questionText').textContent = question.Field1;
-            document.getElementById('questionGuidance').textContent = question.Field4 || '';
-            
-            updateStage1Bars();
-            console.log(`Stage 1: ${question.ID} - ${question.Field1}`);
-        }
+    function showResults() {
+        document.getElementById('stageArea').classList.remove('visible');
+        document.getElementById('counterStrip').classList.remove('visible');
+        document.getElementById('resultArea').classList.add('visible');
+        let final = db.R.find(r => r.id === pool[0]) || { name: "Selection Finalized", desc: "Consult the counselor's guide for additional AI-proofing strategies." };
+        document.getElementById('rTitle').innerText = final.name;
+        document.getElementById('rDesc').innerText = final.desc;
+    }
 
-        function updateStage1Bars() {
-            const question = availableRIASEQuestions[0];
-            const tag = question.Field3;
-            
-            const matching = data.jobs.filter(job => 
-                data.links.some(link => link.ID === job.ID && link.Field2 === tag)
-            );
-            
-            document.getElementById('barCurrent').textContent = data.jobs.length;
-            document.getElementById('yesNum').textContent = matching.length;
-            document.getElementById('noNum').textContent = data.jobs.length;
-        }
-
-        function handleStage1(answer) {
-            if (answer === 'YES') {
-                const currentQ = availableRIASEQuestions[0];
-                state.riaseType = currentQ.Field3.split('_')[1];
-                
-                state.jobPool = data.jobs.filter(job => 
-                    data.links.some(link => 
-                        link.ID === job.ID && 
-                        link.Field2 === `RIASE_${state.riaseType}`
-                    )
-                );
-                
-                console.log(`Selected RIASE: ${state.riaseType}, Jobs: ${state.jobPool.length}`);
-                moveToStage2();
-            } else {
-                availableRIASEQuestions.shift();
-                
-                if (availableRIASEQuestions.length > 0) {
-                    askStage1();
-                } else {
-                    state.riaseType = 'E';
-                    state.jobPool = data.jobs.filter(job => 
-                        data.links.some(link => link.ID === job.ID && link.Field2 === 'RIASE_E')
-                    );
-                    console.log(`Default RIASE: E, Jobs: ${state.jobPool.length}`);
-                    moveToStage2();
-                }
-            }
-        }
-
-        // ============================================================================
-        // STAGE 2
-        // ============================================================================
-        
-        function moveToStage2() {
-            state.stage = 2;
-            state.stage2QuestionIndex = 0;
-            console.log(`Stage 2: ${state.jobPool.length} jobs in pool`);
-            askStage2();
-        }
-
-        function askStage2() {
-            const stage2Questions = data.questions.filter(q => q.Field2 === 'Stage2_Differentiator');
-            
-            while (state.stage2QuestionIndex < stage2Questions.length) {
-                const question = stage2Questions[state.stage2QuestionIndex];
-                const preferenceCode = question.Field3;
-                
-                const hasRelevance = state.jobPool.some(job => 
-                    data.links.some(link => link.ID === job.ID && link.Field2 === preferenceCode)
-                );
-                
-                if (hasRelevance) {
-                    document.getElementById('qNum').textContent = `Stage 2 - Preference ${state.stage2QuestionIndex + 1}`;
-                    document.getElementById('questionText').textContent = question.Field1;
-                    document.getElementById('questionGuidance').textContent = question.Field4 || '';
-                    
-                    updateStage2Bars(question);
-                    console.log(`Stage 2 Q${state.stage2QuestionIndex + 1}: ${question.Field1} (${preferenceCode})`);
-                    return;
-                }
-                
-                console.log(`Skipping Q${state.stage2QuestionIndex + 1}: ${preferenceCode} (not relevant)`);
-                state.stage2QuestionIndex++;
-            }
-            
-            console.log('Stage 2 complete, moving to Stage 3');
-            moveToStage3();
-        }
-
-        function updateStage2Bars(question) {
-            const preferenceCode = question.Field3;
-            
-            const matching = state.jobPool.filter(job => 
-                data.links.some(link => link.ID === job.ID && link.Field2 === preferenceCode)
-            );
-            
-            document.getElementById('barCurrent').textContent = state.jobPool.length;
-            document.getElementById('yesNum').textContent = matching.length;
-            document.getElementById('noNum').textContent = state.jobPool.length - matching.length;
-        }
-
-        function handleStage2(answer) {
-            const stage2Questions = data.questions.filter(q => q.Field2 === 'Stage2_Differentiator');
-            const currentQuestion = stage2Questions[state.stage2QuestionIndex];
-            const preferenceCode = currentQuestion.Field3;
-            
-            if (answer === 'NO') {
-                const beforeCount = state.jobPool.length;
-                
-                state.jobPool = state.jobPool.filter(job => {
-                    return !data.links.some(link => link.ID === job.ID && link.Field2 === preferenceCode);
-                });
-                
-                const eliminated = beforeCount - state.jobPool.length;
-                console.log(`NO to ${preferenceCode}: eliminated ${eliminated} jobs, ${state.jobPool.length} remain`);
-                
-                if (state.jobPool.length === 0) {
-                    const yesChoices = state.answeredPreferences.length > 0 
-                        ? [`${state.riaseType}`, ...state.answeredPreferences]
-                        : [`${state.riaseType}`];
-                    const failureMsg = `You chose: ${yesChoices.join(', ')}. NO jobs match this combination.`;
-                    
-                    saveSession('NO MATCH FOUND', state.riaseType, yesChoices, failureMsg);
-                    
-                    showNoMatchResult(failureMsg);
-                    return;
-                }
-            } else {
-                const prefName = getPreferenceName(preferenceCode);
-                state.answeredPreferences.push(prefName);
-                console.log(`YES to ${preferenceCode}: keeping all ${state.jobPool.length} jobs`);
-            }
-            
-            state.stage2QuestionIndex++;
-            askStage2();
-        }
-
-        // ============================================================================
-        // STAGE 3
-        // ============================================================================
-        
-        function moveToStage3() {
-            state.stage = 3;
-            state.stage3JobIndex = 0;
-            state.stage3Jobs = state.jobPool.slice(0, 10);
-            currentStage3Count = state.stage3Jobs.length;
-            
-            console.log(`Stage 3: ${state.stage3Jobs.length} jobs to evaluate`);
-            
-            if (state.stage3Jobs.length === 0) {
-                const yesChoices = state.answeredPreferences.length > 0 
-                    ? [`${state.riaseType}`, ...state.answeredPreferences]
-                    : [`${state.riaseType}`];
-                const failureMsg = `You chose: ${yesChoices.join(', ')}. NO jobs matched.`;
-                
-                saveSession('NO MATCH FOUND', state.riaseType, yesChoices, failureMsg);
-                showNoMatchResult(failureMsg);
-                return;
-            }
-            
-            askStage3();
-        }
-
-        function askStage3() {
-            if (state.stage3JobIndex >= state.stage3Jobs.length) {
-                if (state.jobPool.length === 0) {
-                    const yesChoices = state.answeredPreferences.length > 0 
-                        ? [`${state.riaseType}`, ...state.answeredPreferences]
-                        : [`${state.riaseType}`];
-                    const failureMsg = `You chose: ${yesChoices.join(', ')}. Then NO to all ${currentStage3Count} suggested jobs.`;
-                    
-                    saveSession('NO MATCH FOUND', state.riaseType, yesChoices, failureMsg);
-                    showNoMatchResult(failureMsg + ' This happens! Perhaps reconsider some preferences.');
-                    return;
-                }
-                showResult();
-                return;
-            }
-            
-            const job = state.stage3Jobs[state.stage3JobIndex];
-            const jobQuestion = data.jobQuestions.find(jq => jq.ID === job.ID);
-            
-            if (!jobQuestion) {
-                state.stage3JobIndex++;
-                askStage3();
-                return;
-            }
-            
-            document.getElementById('qNum').textContent = `Stage 3 - Job ${state.stage3JobIndex + 1} of ${state.stage3Jobs.length}`;
-            document.getElementById('questionText').textContent = jobQuestion.Field1;
-            document.getElementById('questionGuidance').textContent = jobQuestion.Field2 || '';
-            
-            updateStage3Bars();
-            console.log(`Stage 3: ${job.ID} - ${jobQuestion.Field1}`);
-        }
-
-        function updateStage3Bars() {
-            const remaining = state.stage3Jobs.length - state.stage3JobIndex;
-            
-            document.getElementById('barCurrent').textContent = remaining;
-            document.getElementById('yesNum').textContent = '1';
-            document.getElementById('noNum').textContent = (remaining - 1);
-        }
-
-        function handleStage3(answer) {
-            const job = state.stage3Jobs[state.stage3JobIndex];
-            
-            if (answer === 'YES') {
-                state.jobPool = [job];
-                console.log(`YES to ${job.ID} - Selected as final match!`);
-                showResult();
-                return;
-            } else {
-                state.rejectedJobs.push(job.Field1);
-                state.jobPool = state.jobPool.filter(j => j.ID !== job.ID);
-                console.log(`NO to ${job.ID}, ${state.jobPool.length} jobs remain`);
-                
-                state.stage3JobIndex++;
-                askStage3();
-            }
-        }
-
-        // ============================================================================
-        // RESULTS
-        // ============================================================================
-        
-        function showResult() {
-            if (state.jobPool.length === 0) {
-                const yesChoices = state.answeredPreferences.length > 0 
-                    ? [`${state.riaseType}`, ...state.answeredPreferences]
-                    : [`${state.riaseType}`];
-                const failureMsg = `You chose: ${yesChoices.join(', ')}. NO jobs matched.`;
-                
-                saveSession('NO MATCH FOUND', state.riaseType, yesChoices, failureMsg);
-                showNoMatchResult(failureMsg);
-                return;
-            }
-            
-            const matchedJob = state.jobPool[0];
-            console.log(`Final match: ${matchedJob.ID} - ${matchedJob.Field1}`);
-            
-            const userPreferences = [];
-            const riaseNames = {
-                'R': 'hands-on, practical work',
-                'I': 'analytical, problem-solving work',
-                'A': 'creative, expressive work',
-                'S': 'helping, teaching, caring for people',
-                'E': 'leading, managing, persuading others'
-            };
-            userPreferences.push(riaseNames[state.riaseType] || state.riaseType);
-            
-            const jobLinks = data.links.filter(link => link.ID === matchedJob.ID);
-            jobLinks.slice(0, 3).forEach(link => {
-                const entity = data.entities.find(e => e.ID === link.Field2);
-                if (entity) {
-                    userPreferences.push(entity.Field1.toLowerCase());
-                }
-            });
-            
-            const promptText = `FortuneReader helped me select ${matchedJob.Field1} as a career I could live with for years. Tell me the problems I should expect and how I can cope.`;
-            
-            saveSession(matchedJob.Field1, state.riaseType, userPreferences, promptText);
-            
-            document.getElementById('questionSection').style.display = 'none';
-            document.getElementById('progressBox').style.display = 'none';
-            document.getElementById('resultSection').classList.add('visible');
-            
-            document.getElementById('resultTitle').textContent = matchedJob.Field1;
-            document.getElementById('resultDescription').textContent = matchedJob.Field3;
-            
-            // Show result buttons in control panel
-            document.getElementById('resultButtons').classList.add('visible');
-            
-            // Wire up the 3 result buttons
-            document.getElementById('restartResultBtn').onclick = () => location.reload();
-            
-            document.getElementById('historyResultBtn').onclick = showHistory;
-            
-            document.getElementById('claudeResultBtn').onclick = function() {
-                navigator.clipboard.writeText(promptText).then(() => {
-                    window.open('https://claude.ai/new', '_blank');
-                    
-                    const btn = document.getElementById('claudeResultBtn');
-                    const originalText = btn.textContent;
-                    btn.textContent = '✓ COPIED';
-                    btn.classList.add('success');
-                    
-                    setTimeout(() => {
-                        btn.textContent = originalText;
-                        btn.classList.remove('success');
-                    }, 3000);
-                }).catch(err => {
-                    console.error('Copy failed:', err);
-                    alert('Could not copy prompt. Please copy manually:\n\n' + promptText);
-                });
-            };
-        }
-
-        function showNoMatchResult(msg) {
-            document.getElementById('questionSection').style.display = 'none';
-            document.getElementById('progressBox').style.display = 'none';
-            document.getElementById('resultSection').classList.add('visible');
-            
-            document.getElementById('resultTitle').textContent = 'No Matching Careers Found';
-            document.getElementById('resultDescription').textContent = msg + ' Try again with different preferences.';
-            
-            // Show result buttons
-            document.getElementById('resultButtons').classList.add('visible');
-            
-            // Wire up buttons
-            document.getElementById('restartResultBtn').onclick = () => location.reload();
-            document.getElementById('restartResultBtn').textContent = 'START OVER';
-            
-            document.getElementById('historyResultBtn').onclick = showHistory;
-            
-            // Hide Claude button for no match
-            document.getElementById('claudeResultBtn').style.display = 'none';
-        }
-
-        // ============================================================================
-        // ANSWER HANDLER
-        // ============================================================================
-        
-        function selectBarAnswer(answer) {
-            selectedAnswer = answer;
-            
-            if (answer === 'YES') {
-                document.getElementById('barYes').classList.add('selected');
-                document.getElementById('barNo').classList.remove('selected');
-            } else {
-                document.getElementById('barNo').classList.add('selected');
-                document.getElementById('barYes').classList.remove('selected');
-            }
-            
-            setTimeout(commitAnswer, 400);
-        }
-
-        function commitAnswer() {
-            if (!selectedAnswer) return;
-            
-            const answer = selectedAnswer;
-            selectedAnswer = null;
-            document.getElementById('barYes').classList.remove('selected');
-            document.getElementById('barNo').classList.remove('selected');
-            
-            if (state.stage === 1) {
-                handleStage1(answer);
-            } else if (state.stage === 2) {
-                handleStage2(answer);
-            } else if (state.stage === 3) {
-                handleStage3(answer);
-            }
-        }
-
-        // ============================================================================
-        // HELPERS
-        // ============================================================================
-        
-        function showMessage(msg, type) {
-            const el = document.getElementById('message');
-            el.className = 'message ' + type;
-            el.textContent = msg;
-        }
-
-        function getPreferenceName(code) {
-            const prefMap = {
-                'ENV_Outdoor': 'outdoor work',
-                'ENV_Travel': 'regular travel',
-                'ENV_Noise': 'noisy environments',
-                'ENV_Messy': 'messy conditions',
-                'ENV_Extreme': 'extreme weather',
-                'ENV_Urban': 'urban areas',
-                'ENV_Private': 'private workspace',
-                'ENV_Single': 'single location',
-                'PHYS_Active': 'physically active work',
-                'PHYS_Standing': 'standing most of day',
-                'PHYS_Fine': 'precise hand movements',
-                'PHYS_Heavy': 'heavy lifting',
-                'PHYS_Danger': 'dangerous work',
-                'PHYS_Hazards': 'hazardous exposure',
-                'PHYS_Stamina': 'sustained endurance',
-                'PHYS_Visual': 'exceptional visual acuity',
-                'PHYS_Repetitive': 'repetitive motions',
-                'PHYS_Varied': 'varied physical movements',
-                'SOC_Solo': 'working alone',
-                'SOC_Public': 'public-facing work',
-                'SOC_Supervise': 'supervising others',
-                'SOC_Collab': 'collaborative work',
-                'SOC_Present': 'presentations/speaking',
-                'SOC_Conflict': 'managing conflicts',
-                'SOC_OneOnOne': 'one-on-one interactions',
-                'SOC_Behind': 'behind-the-scenes work',
-                'TIME_Night': 'night shifts',
-                'TIME_Irregular': 'irregular schedules',
-                'TIME_Seasonal': 'seasonal work',
-                'TIME_Deadline': 'tight deadlines',
-                'TIME_SelfPaced': 'self-paced work',
-                'TIME_Short': 'short tasks',
-                'TIME_Immediate': 'immediate results',
-                'COG_Routine': 'routine work',
-                'COG_Abstract': 'abstract thinking',
-                'COG_Quantitative': 'working with numbers',
-                'COG_Creative': 'creative work',
-                'COG_BigPicture': 'big-picture thinking',
-                'COG_Multitask': 'multi-tasking',
-                'COG_Learning': 'extended training',
-                'COG_Reference': 'reference-based work',
-                'DEC_HighStakes': 'high-stakes decisions',
-                'DEC_Autonomous': 'autonomous work',
-                'DEC_Rapid': 'rapid decisions',
-                'DEC_Ambiguous': 'ambiguous situations',
-                'DEC_Individual': 'individual decisions',
-                'DEC_Create': 'creating procedures',
-                'EMO_Intense': 'emotionally intense work',
-                'EMO_Trauma': 'dealing with trauma',
-                'EMO_HighStress': 'high-stress environments'
-            };
-            return prefMap[code] || code;
-        }
-
-        // ============================================================================
-        // HISTORY
-        // ============================================================================
-        
-        function saveSession(jobTitle, riaseType, preferences, prompt) {
-            const sessions = JSON.parse(localStorage.getItem('fortunereader_sessions') || '[]');
-            
-            sessions.unshift({
-                date: new Date().toLocaleString(),
-                jobTitle: jobTitle,
-                riaseType: riaseType,
-                preferences: preferences,
-                rejectedJobs: state.rejectedJobs,
-                prompt: prompt
-            });
-            
-            if (sessions.length > 10) sessions.pop();
-            localStorage.setItem('fortunereader_sessions', JSON.stringify(sessions));
-        }
-
-        function showHistory() {
-            const sessions = JSON.parse(localStorage.getItem('fortunereader_sessions') || '[]');
-            const panel = document.getElementById('historyPanel');
-            
-            if (sessions.length === 0) {
-                panel.innerHTML = '<div class="no-history">No previous sessions yet.</div>';
-            } else {
-                let html = '';
-                sessions.forEach((s, i) => {
-                    const prefs = s.preferences && s.preferences.length > 0 ? s.preferences.join(', ') : 'No preferences';
-                    const rej = s.rejectedJobs && s.rejectedJobs.length > 0 ? `<br><strong>Jobs refused:</strong> ${s.rejectedJobs.join(', ')}` : '';
-                    
-                    html += `
-                        <div class="history-item">
-                            <div class="history-item-header">Session ${sessions.length - i}: ${s.jobTitle}</div>
-                            <div class="history-item-details">
-                                <strong>Date:</strong> ${s.date}<br>
-                                <strong>Choice:</strong> ${s.riaseType}<br>
-                                <strong>Preferences:</strong> ${prefs}${rej}
-                            </div>
-                        </div>
-                    `;
-                });
-                panel.innerHTML = html;
-            }
-            
-            document.getElementById('historyModal').classList.add('visible');
-        }
-
-        function closeHistory() {
-            document.getElementById('historyModal').classList.remove('visible');
-        }
-    </script>
+    function copyAIPrompt() {
+        const title = document.getElementById('rTitle').innerText;
+        const desc = document.getElementById('rDesc').innerText;
+        const prompt = `I am a student exploring a career in: ${title}. \n\nCareer Context: ${desc}\n\nAct as a career counselor. Please provide a roadmap for this student, specifically focusing on how they can build human-centric skills that are 'AI-proof' within this specific industry.`;
+        navigator.clipboard.writeText(prompt);
+        alert("AI Roadmap Prompt copied.");
+    }
+</script>
 </body>
 </html>
