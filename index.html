@@ -11,21 +11,29 @@
         header { margin-bottom: 25px; text-align: center; }
         h1 { font-size: 2.2rem; font-weight: 300; letter-spacing: 2px; margin: 0; }
         .subtitle { font-size: 0.7rem; letter-spacing: 3px; color: #8a8375; text-transform: uppercase; font-weight: bold; margin-top: 5px; }
+        
         .counter-strip { display: none; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background-color: #e5e2d5; border: 1px solid #e5e2d5; margin-bottom: 25px; }
         .counter-strip.visible { display: grid; }
         .stat-box { background: #fffdf5; padding: 12px; }
         .stat-label { font-size: 0.6rem; color: #8a8375; display: block; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
         .stat-value { font-size: 1.2rem; font-weight: 300; }
+        
         .stage-area { display: none; min-height: 200px; flex-direction: column; justify-content: center; }
         .stage-area.visible { display: flex; }
         .q-text { font-size: 1.6rem; font-weight: 300; margin-bottom: 12px; line-height: 1.3; color: #111; }
         .q-guide { font-size: 0.9rem; color: #8a8375; font-style: italic; margin-bottom: 25px; line-height: 1.5; }
+        
         .btn-group { display: flex; justify-content: center; gap: 15px; }
         .gemini-btn { flex: 1; padding: 18px 0; background: #1a1a1a; color: #fff; border: none; cursor: pointer; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; transition: all 0.2s; }
         .gemini-btn:hover { background: #444; }
         .gemini-btn.secondary { background: #e5e2d5; color: #1a1a1a; border: 1px solid #d1cec0; }
+        
         footer { margin-top: 30px; padding-top: 20px; border-top: 2px solid #1a1a1a; }
         .tagline { font-size: 0.8rem; font-weight: 600; letter-spacing: 3px; color: #1a1a1a; text-transform: uppercase; }
+        
+        .legal-footer { font-size: 0.55rem; color: #b5b0a1; margin-top: 10px; letter-spacing: 1px; text-transform: uppercase; }
+        .copyright-banner { font-size: 0.65rem; color: #8a8375; margin-bottom: 20px; }
+
         .result-screen { display: none; text-align: center; animation: fadeIn 0.4s ease; }
         .result-screen.visible { display: block; }
         #rTitle { font-weight: 300; font-size: 1.8rem; margin-bottom: 15px; }
@@ -47,6 +55,7 @@
         </div>
 
         <div id="welcome">
+            <div class="copyright-banner">© Abraham Thomas. All Rights Reserved.</div>
             <p style="font-size:0.85rem; margin-bottom:12px; color:#8a8375; font-style: italic;">Load the local dataset to initialize the matrix.</p>
             <button class="gemini-btn" onclick="document.getElementById('csvFile').click()">||| BEGIN |||</button>
             <input type="file" id="csvFile" accept=".csv" style="display: none;" />
@@ -70,7 +79,10 @@
             </div>
         </div>
 
-        <footer><div class="tagline">1,048,576 Paths To AI-Proof Your Students</div></footer>
+        <footer>
+            <div class="tagline">1,048,576 Paths To AI-Proof Your Students</div>
+            <div class="legal-footer">FortuneReader™ Abraham Thomas</div>
+        </footer>
     </div>
 
 <script>
@@ -78,7 +90,7 @@
     let poolQ = []; 
     let poolJ = []; 
     let stage = 1; 
-    let sessionHistory = ""; // Records EVERYTHING (Agree & Disagree)
+    let sessionHistory = "";
 
     document.getElementById('csvFile').onchange = (e) => {
         Papa.parse(e.target.files[0], {
@@ -119,23 +131,39 @@
             }) : poolJ;
         } else {
             let linked = MASTER.filter(r => r[0].toLowerCase().includes('links') && r[4] === window.currentQ.id).map(r => r[2]);
-            let filtered = isAgree ? poolJ.filter(id => linked.includes(id)) : poolJ.filter(id => !linked.includes(id));
-            return filtered.length > 0 ? filtered : poolJ;
+            return isAgree ? poolJ.filter(id => linked.includes(id)) : poolJ.filter(id => !linked.includes(id));
         }
     }
 
     function next() {
         prune();
-        if (poolJ.length === 0) { showFinal("A Unique Path", "Your evaluations suggest a profile that transcends categorization."); return; }
-        if (poolQ.length === 0 || poolJ.length === 1) { stage = 3; displayGate(); return; }
+        
+        if (poolJ.length === 0) { 
+            showFinal("Unworkable Selections", "680 occupations. It's Your Life! Find your workable combination!"); 
+            return; 
+        }
+
+        if (poolQ.length === 0 || poolJ.length === 1) { 
+            stage = 3; 
+            displayGate(); 
+            return; 
+        }
+
         const tags = { 1: "stage1_riase", 2: "stage2_differentiator" };
         let nextQID = poolQ.find(id => {
             let row = MASTER.find(r => r[1] === id);
             return row && row[3].toLowerCase() === tags[stage];
         });
-        if (!nextQID) { if (stage < 2) { stage++; next(); } else { stage = 3; next(); } return; }
+
+        if (!nextQID) { 
+            if (stage < 2) { stage++; next(); } 
+            else { stage = 3; next(); } 
+            return; 
+        }
+
         let qRow = MASTER.find(r => r[1] === nextQID);
         window.currentQ = { id: qRow[1], type: qRow[3].toLowerCase(), riase: qRow[4], text: qRow[2] };
+        
         let yesPool = calculate(true);
         let noPool = calculate(false);
         updateUI(qRow[2], qRow[5], poolJ.length, yesPool.length, noPool.length);
@@ -143,27 +171,29 @@
 
     function handleAnswer(ans) {
         let isAgree = (ans === 'YES');
-        
-        // Record the decision regardless of Agree or Disagree
         let prefix = isAgree ? "Agree: " : "Disagree: ";
         sessionHistory += prefix + window.currentQ.text + ". ";
+
+        // CRITICAL FIX: Always remove current question from pool immediately
+        poolQ = poolQ.filter(id => id !== window.currentQ.id);
 
         if (stage === 3) {
             if (isAgree) { showFinalDetails(poolJ[0]); }
             else { 
                 poolJ.shift(); 
-                if (poolJ.length === 0) showFinal("Unworkable Selections", "680 occupations. Its Your Life! Find your workable combination!");
-                else next();
+                next();
             }
             return;
         }
 
         if (stage === 1 && isAgree) {
-            poolJ = calculate(true); stage = 2;
+            poolJ = calculate(true); 
+            stage = 2;
         } else if (stage === 2) {
-            poolJ = calculate(isAgree);
+            let newPool = calculate(isAgree);
+            if (newPool.length > 0) poolJ = newPool;
         }
-        poolQ = poolQ.filter(id => id !== window.currentQ.id);
+        
         next();
     }
 
@@ -178,7 +208,8 @@
     function displayGate() {
         let currentJobID = poolJ[0];
         let rqRow = MASTER.find(r => r[0].toLowerCase() === "resultquestion" && r[1] === currentJobID);
-        updateUI(rqRow ? rqRow[2] : "Result Candidate: " + currentJobID, rqRow ? rqRow[3] : "Do you accept this path?", poolJ.length, 1, poolJ.length - 1);
+        window.currentQ = { id: currentJobID, text: rqRow ? rqRow[2] : "Result Candidate: " + currentJobID };
+        updateUI(window.currentQ.text, rqRow ? rqRow[3] : "Do you accept this path?", poolJ.length, 1, poolJ.length - 1);
     }
 
     function showFinalDetails(jid) {
@@ -197,7 +228,7 @@
     function copyAIPrompt() {
         const title = document.getElementById('rTitle').innerText;
         const prompt = `Student Career Discovery Data:\nFinal Occupation Result: ${title}.\n\nFull Decision History (Audit Trail):\n${sessionHistory}\n\nAct as a career counselor. Based on this specific result and the history of choices provided above, provide a personalized roadmap for building human-centric, AI-proof skills.`;
-        navigator.clipboard.writeText(prompt).then(() => alert("Full Audit Trail copied."));
+        navigator.clipboard.writeText(prompt).then(() => alert("Full Audit Trail & Legal ID copied."));
     }
 </script>
 </body>
